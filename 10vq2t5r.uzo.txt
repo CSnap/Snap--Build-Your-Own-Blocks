@@ -1,0 +1,18 @@
+﻿Border color functions.
+
+Added functions to Set, Get and Change border color.
+
+To test,:
+Open CSnap locally.
+Do a File-> Import-> (a local copy of Graffiti.xml)
+In the script, remove the "set border color to pen color" block.
+Sub in, "Set border shade to" and change the default to 0.
+Run the app to see that the border color is now black.
+
+For further testing, lower in the script, (the if-else statement) you can sub in the "change border shade by ?" or "set border shade to" blocks.
+
+Future consideration: Should we get rid of the "Set border color to" block?
+
+
+#
+
