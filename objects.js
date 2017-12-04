@@ -1409,8 +1409,8 @@ SpriteMorph.prototype.blockAlternatives = {
     // sensing:
     getLastAnswer: ['getTimer'],
     getTimer: ['getLastAnswer'],
-    reportMouseX: ['reportMouseY'],
-    reportMouseY: ['reportMouseX'],
+    reportMouseX: ['reportMouseX'],
+    reportMouseY: ['reportMouseY'],
 
     // operators:
     reportSum: ['reportDifference', 'reportProduct', 'reportQuotient'],
