@@ -10869,3 +10869,150 @@ WorldMorph.prototype.togglePreferences = function () {
         MorphicPreferences = standardSettings;
     }
 };
+
+// Adding hover item
+MenuMorph.prototype.addHoverItem = function(labelString, action) {
+    this.items.push(new MenuHoverItemMorph(localize(labelString || 'close'), action, this));
+};
+
+MenuMorph.prototype.drawNew = function () {
+    var myself = this,
+        item,
+        fb,
+        x,
+        y,
+        isLine = false;
+
+    this.children.forEach(function (m) {
+        m.destroy();
+    });
+    this.children = [];
+    if (!this.isListContents) {
+        this.edge = MorphicPreferences.isFlat ? 0 : 5;
+        this.border = MorphicPreferences.isFlat ? 1 : 2;
+    }
+    this.color = new Color(255, 255, 255);
+    this.borderColor = new Color(60, 60, 60);
+    this.silentSetExtent(new Point(0, 0));
+
+    y = 2;
+    x = this.left() + 4;
+    if (!this.isListContents) {
+        if (this.title) {
+            this.createLabel();
+            this.label.setPosition(this.bounds.origin.add(4));
+            this.add(this.label);
+            y = this.label.bottom();
+        } else {
+            y = this.top() + 4;
+        }
+    }
+    y += 1;
+    this.items.forEach(function (tuple) {
+        isLine = false;
+        if (tuple instanceof StringFieldMorph ||
+                tuple instanceof ColorPickerMorph ||
+                tuple instanceof SliderMorph ||
+                tuple instanceof MenuHoverItemMorph) { // added
+            item = tuple;
+        } else if (tuple[0] === 0) {
+            isLine = true;
+            item = new Morph();
+            item.color = myself.borderColor;
+            item.setHeight(tuple[1]);
+        } else {
+            item = new MenuItemMorph(
+                myself.target,
+                tuple[1],
+                tuple[0],
+                myself.fontSize || MorphicPreferences.menuFontSize,
+                MorphicPreferences.menuFontName,
+                myself.environment,
+                tuple[2], // bubble help hint
+                tuple[3], // color
+                tuple[4], // bold
+                tuple[5], // italic
+                tuple[6] // doubleclick action
+            );
+        }
+        if (isLine) {
+            y += 1;
+        }
+        item.setPosition(new Point(x, y));
+        myself.add(item);
+        y = y + item.height();
+        if (isLine) {
+            y += 1;
+        }
+    });
+
+    fb = this.fullBounds();
+    this.silentSetExtent(fb.extent().add(4));
+    this.adjustWidths();
+    MenuMorph.uber.drawNew.call(this);
+};
+
+var MenuHoverItemMorph;
+MenuHoverItemMorph.prototype = new MenuItemMorph();
+MenuHoverItemMorph.prototype.constructor = MenuHoverItemMorph;
+MenuHoverItemMorph.uber = MenuItemMorph.prototype;
+
+function MenuHoverItemMorph(labelString, submenu, parentMenu) {
+    var myself = this;
+
+    this.submenu = submenu;
+    this.parentMenu = parentMenu;
+
+    this.init(
+        parentMenu.target,
+        myself.revealSubmenu,
+        labelString,
+        parentMenu.fontSize,
+        MorphicPreferences.menuFontName,
+        parentMenu.environment,
+        null,
+        null,
+        false,
+        false,
+        null
+    );
+};
+
+MenuHoverItemMorph.prototype.revealSubmenu = function() {
+    var myself = this;
+
+    this.image = this.highlightImage;
+    this.submenu.drawNew();
+    this.submenu.setPosition(this.topRight());
+    this.submenu.addShadow(new Point(2, 2), 80);
+    this.submenu.keepWithin(world);
+    if (this.submenu.items.length < 1 && !this.submenu.title) { // don't show empty menus
+        return;
+    }
+    world.add(this.submenu);
+    world.activeMenu = this.submenu;
+    this.submenu.world = world; // optionally enable keyboard support
+    this.submenu.fullChanged();
+    this.changed();
+
+    this.submenu.mouseLeave = function() {
+        this.destroy();
+        if (!myself.boundingBox().containsPoint(world.hand.position())) {
+            myself.image = myself.normalImage;
+            myself.changed();
+        }
+        world.activeMenu = myself.parentMenu;
+    }
+};
+
+MenuHoverItemMorph.prototype.mouseEnter = MenuHoverItemMorph.prototype.revealSubmenu;
+MenuHoverItemMorph.prototype.mouseClickLeft = MenuHoverItemMorph.prototype.revealSubmenu;
+
+MenuHoverItemMorph.prototype.mouseLeave = function() {
+    if (!this.submenu.boundingBox().containsPoint(world.hand.position())) {
+        this.submenu.destroy();
+        this.image = this.normalImage;
+        this.changed();
+        world.activeMenu = this.parentMenu;
+    }
+};

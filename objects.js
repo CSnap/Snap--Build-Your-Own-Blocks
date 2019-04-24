@@ -732,6 +732,13 @@ SpriteMorph.prototype.initBlocks = function () {
             spec: 'text %s size: %n height: %n',
             defaults: [localize('Hello!'), 30, 3]
         },
+        // Still Working on below
+        renderIcosahedron: {
+			"type": "command",
+			"category": "pen",
+			"spec": "radius: %n default: %n color: %s",
+			"default": [1, 0, "red"]
+		},
         // Control
         receiveGo: {
             type: 'hat',
@@ -1565,6 +1572,8 @@ SpriteMorph.prototype.drawNew = function () {
         ctx,
         handle;
 
+    // console.log(myself);
+
     if (this.costume && this.costume.is3D) {
         // the 3D object will be rendered in StageMorph.drawOn() later
         this.hide();
@@ -2012,6 +2021,8 @@ SpriteMorph.prototype.blockTemplates = function (category) {
             blocks.push(block('renderCylinder'));
             blocks.push(block('renderTorusKnot'));
             blocks.push(block('renderText'));
+            //still working on the line below
+            blocks.push(block('renderIcosahedron'));
         }
         else {
         }
@@ -2618,7 +2629,7 @@ SpriteMorph.prototype.wearCostume = function (costume) {
 
             this.mesh = mesh;
             this.hide();
-            this.object.children = []
+            this.object.children = [];
             this.object.add(this.mesh);
             this.parent.changed(); // redraw stage
         }
@@ -3299,7 +3310,7 @@ SpriteMorph.prototype.renderCylinder = function (top, bottom, height) {
     const THREEJS_CYLINDER_RADIUS_SEGMENTS = 90;
     this.render3dShape(new THREE.CylinderGeometry(top, bottom, height,
                                                   THREEJS_CYLINDER_RADIUS_SEGMENTS));
-}
+};
 
 SpriteMorph.prototype.renderTorusKnot = function (radius, tube, p, q, heightScale) {
     const THREEJS_TORUS_KNOT_RADIAL_SEGMENTS = 24,
@@ -3308,14 +3319,52 @@ SpriteMorph.prototype.renderTorusKnot = function (radius, tube, p, q, heightScal
                                                    THREEJS_TORUS_KNOT_RADIAL_SEGMENTS,
                                                    THREEJS_TORUS_KNOT_TUBULAR_SEGMENTS,
                                                    p, q, heightScale));
-}
+};
 
 SpriteMorph.prototype.renderText = function (text, size, height) {
     const THREEJS_TEXT_CURVE_SEGMENTS = 8;
     this.render3dShape(new THREE.TextGeometry(text, {size: size, height: height,
                                                      curveSegments: THREEJS_TEXT_CURVE_SEGMENTS,
                                                      font:"helvetiker"}));
-}
+};
+
+//Todo confirm with Ron to see if this is the right spot to add the Icosahedron
+
+SpriteMorph.prototype.renderIcosahedron = function (radius, detail, colorParam){
+    try {
+            let icosahedron = function () {
+                if (radius === undefined || detail === undefined) {
+                    radius = 1;
+                    detail = 0;
+                }
+
+                let enteredColorToLowerCase = colorParam.toLowerCase();
+                let color = "";
+                let emissive = "";
+
+                if (enteredColorToLowerCase !== undefined) {
+                    color = new THREE.Color(enteredColorToLowerCase);
+                    emissive = color;
+                } else {
+                    color = new THREE.Color('blue');
+                    emissive = color;
+                }
+                let geometry = new THREE.IcosahedronGeometry(radius, detail);
+                let material = new THREE.MeshLambertMaterial({emissive: emissive, color: color});
+                return new THREE.Mesh(geometry, material);
+            };
+            this.render3dShape(icosahedron());
+
+            // For debugging
+            console.log(myself);
+            console.log(this);
+
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+
 
 // SpriteMorph pen size
 
@@ -6476,7 +6525,7 @@ function Costume(canvas, name, rotationCenter, url, is3D, is3dSwitchable) {
     // newly added for 3D
     this.url = url;
     this.is3D = is3D;
-    this.is3dSwitchable = is3dSwitchable
+    this.is3dSwitchable = is3dSwitchable;
     this.geometry = null;
     this.map = null;
 }
