@@ -12,6 +12,13 @@
  *
  */
 
+//this code is last done by Jimmy Ruan
+//reach me @	773-280-1417
+//				jiruan@umich.edu (may or may not be reachable after I graduated)
+
+// Jimmy's note: the original code seems like it's pulled from Three.js's example code
+// at https://github.com/mrdoob/three.js/blob/master/examples/js/exporters/STLExporter.js
+
 THREE.STLExporter = function () {};
 
 THREE.STLExporter.prototype = {
@@ -19,17 +26,62 @@ THREE.STLExporter.prototype = {
 	constructor: THREE.STLExporter,
 
 	parse: ( function () {
-
+/*
 		var vector = new THREE.Vector3();
 		var normalMatrixWorld = new THREE.Matrix3();
+*/
+		return function parse( image, directory, filename, options ) {
+			//simply sends the image to the backend to let it process the STL file
+			//then send a request for the STL file, subsequently saving the resulting received file
+			//parameter:
+			//	image [required](data URI): the url of the image (converted using toDataURL or the like)
+			//	directory [required](str): the directory the STL file should be saved to
+			//  filename (str): the filename to name the STL file as
+			//		*NOTE: TODO: filename may not be needed as it can be sent via the resulting request
+			//	options: various options specifying parameters to create the STL file with
+			//		TODO: do something with options
 
-		return function parse( scene, options ) {
+				//<jimmy's code>
+			//simply prints the string into console
+			//copy the URL into the address bar itself during debugging
+			//the url should display the image of the stage by entering it into the address bar
+			console.log("IMAGE URL:\n" + image);
+			console.log("\n\nSending image url into " + directory);
 
-			if ( options === undefined ) options = {};
+			//send post request to backend with data url
+			//should receive the STL model as a response
+			fetch(directory,
+				{
+					method: "POST",
+					body: image //note to future self: this is the form data
+					//change the form data however you like to fit backend
+					//try not to do the other way around
+					//mode: whatever value gets rid of cors error
+					//may or may not need to change mode to avoid cross site origin security error
+
+					//add other stuff here
+					//reference: https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
+				}
+			)
+				.then(function() { //now we get the resulting STL file
+					fetch(directory)
+						.then(function(response) {
+							return response.blob();
+						})
+						.then(function(STLBlob) {
+							saveAs(STLBlob, filename); //this should download the file
+						});
+				})
+				.catch(function(errorMessage) {
+					console.log("Failed to send image to " + directory);
+					console.log("Error: " + errorMessage);
+				});
+                //</jimmy's code>
+
+/*
+			//<code from three.STLEXPORTER>
 
 			var binary = options.binary !== undefined ? options.binary : false;
-
-			//
 
 			var objects = [];
 			var triangles = 0;
@@ -158,7 +210,9 @@ THREE.STLExporter.prototype = {
 				return output;
 
 			}
+			//</code from three.STLEXPORTER>
 
+*/
 		};
 
 	}() )

@@ -327,7 +327,7 @@ IDE_Morph.prototype.openIn = function (world) {
             }
             throw new Error('unable to retrieve ' + url);
         } catch (err) {
-            return;
+
         }
     }
 
@@ -365,7 +365,7 @@ IDE_Morph.prototype.openIn = function (world) {
             }
             world.children[0].openProjectString(src);
         }
-    }
+    };
 
     if(config.modules !== undefined && config.modules.module !== undefined ) {
         var mdl = new ModuleLoader(myself);
@@ -470,7 +470,7 @@ IDE_Morph.prototype.openIn = function (world) {
             };
             xhr.onerror = function() {
                 console.log("Error!");
-            }
+            };
 
             xhr.send();
         }
@@ -555,7 +555,7 @@ IDE_Morph.prototype.precacheGoals = function() {
     }
 
     return true;
-}
+};
 
 IDE_Morph.prototype.createControlBar = function () {
     // assumes the logo has already been created
@@ -1534,7 +1534,7 @@ IDE_Morph.prototype.createCorralBar = function () {
         this.corralBar.left() + padding + (newbutton.width() + padding)*2
     );
 
-    this.corralBar.add(xlabel)
+    this.corralBar.add(xlabel);
 
     ylabel = new StringMorph(
             "Y: 0",
@@ -1552,7 +1552,7 @@ IDE_Morph.prototype.createCorralBar = function () {
         this.corralBar.left() + padding + (newbutton.width() + padding)*2 + 100
     );
 
-    this.corralBar.add(ylabel)
+    this.corralBar.add(ylabel);
 
     this.corralBar.step = function() {
       this.parent.updateCorralBar();
@@ -2640,6 +2640,128 @@ IDE_Morph.prototype.settingsMenu = function () {
     menu.popup(world, pos);
 };
 
+
+// Everything below will be moved to a different JS file but for now, lets leave it here for debugging
+// function doActualExtrusionOfImage(pathToImgWeWantToExtrude, x, y) {
+//     // temporary canvas to hold the image and retrieve its data
+//     let tempCanvasToGetImageData = document.createElement('canvas');
+//     let ctx = tempCanvasToGetImageData.getContext("2d");
+//     tempCanvasToGetImageData.width = pathToImgWeWantToExtrude.width;
+//     tempCanvasToGetImageData.height = pathToImgWeWantToExtrude.height;
+//     ctx.drawImage(pathToImgWeWantToExtrude, 0, 0);  // this should draw the image with its intrinsic size
+//
+//     let myImageData = ctx.getImageData(x, y, pathToImgWeWantToExtrude.width, pathToImgWeWantToExtrude.height);
+//
+//     for (let i=0;i<myImageData.data.length;i+=4) {
+//         let avg = (myImageData.data[i]+myImageData.data[i+1]+myImageData.data[i+2])/3;
+//         myImageData.data[i] = avg;
+//         myImageData.data[i+1] = avg;
+//         myImageData.data[i+2] = avg;
+//     }
+//
+//     ctx.putImageData(myImageData, 0, 0, 0, 0, myImageData.width, myImageData.height);
+//
+//     let myNewImage = new Image();
+//     myNewImage.src = tempCanvasToGetImageData.toDataURL("image/png");
+//
+//     // We are creating a temp anchor tag to hold the image above which we created from our temp canvas above,
+//     // Code below should download the grayscaled image
+//     let a = document.createElement('a');
+//     a.href = myNewImage.src;
+//     a.download = "image.png";
+//     // console.log(a);
+//     // Uncomment code below to allow for download of grayscaled image
+//     // document.body.appendChild(a);
+//     // a.click();
+//     // document.body.removeChild(a);
+//
+//     // Function below gets our heightMap for a specified image passed in as an argument
+//     function heightMap(image, scale) {
+// 				let tempCanvasB = document.createElement( "canvas" );
+// 				tempCanvasB.width = image.width;
+// 				tempCanvasB.height = image.height;
+// 				let contextB = tempCanvasB.getContext("2d");
+//
+// 				let size = image.width * image.height;
+// 				console.log(size + " = width * height of given image");
+//
+//                 let data = new Float32Array( size );
+//
+// 				contextB.drawImage(image,0,0);
+//
+// 				for ( let i = 0; i < size; i ++ ) {
+// 					data[i] = 0;
+// 				}
+//
+// 				let imgdata = contextB.getImageData(0, 0, image.width, image.height);
+// 				let pix = imgdata.data;
+//
+// 				let j=0;
+// 				for (let i = 0, n = pix.length; i < n; i += 4) {
+// 					let all = pix[i]+pix[i+1]+pix[i+2];
+// 					data[j++] = all/(12 * scale);
+// 				}
+// 				return data;
+//     }
+//
+//
+//     // Get heightMap for our image
+//     let heightMapDataForMyImage = heightMap(pathToImgWeWantToExtrude, 2);
+//     // console.log("Data returned from inner function is: " + heightMapDataForMyImage);
+//
+//     function createPlaneWithHeightMapData(data) {
+//         let geometry = new THREE.PlaneGeometry(10, 10, 9, 9);
+//         console.log(pathToImgWeWantToExtrude.src);
+//         let texture = new THREE.ImageUtils.loadTexture(pathToImgWeWantToExtrude.src);
+//         let material = new THREE.MeshLambertMaterial( {map: texture} );
+//         let plane = new THREE.Mesh(geometry, material);
+//
+//         for (let i = 0; i < plane.geometry.vertices.length; i++){
+//             plane.geometry.vertices[i].z = data[i];
+//             console.log(data[i]);
+//         }
+//         return plane;
+//     }
+//     // Code below will return a three js plane mesh object from our function above
+//     let returnedPlaneFromOurFunction = createPlaneWithHeightMapData(heightMapDataForMyImage);
+//     console.log(returnedPlaneFromOurFunction);
+//
+//     //TODO Create a Scene and Add the plane to the scene and export the Scene as STL
+//     try {
+//         let scene = new THREE.Scene();
+//         scene.add(returnedPlaneFromOurFunction);    // Adding our returned plane mesh the function above
+//
+//         // let exporter = new THREE.STLExporter();
+//         // let str = exporter.parse(scene);
+//         //
+//         // let blobbb = new Blob([str], {type: 'text/plain'});
+//         // saveAs(blobbb, '2D.stl');
+//         // console.log("Exported scene successfully");
+//
+//         // console.log(returnedPlaneFromOurFunction.geometry.vertices);
+//         console.log(scene.children);
+//     } catch (e) {
+//         console.log("Exception from trying to export the 2D.stl file was: " + e);
+//     }
+// }
+
+function extruding2D(myself) {
+    let stage = myself.stage;   // this is the stage
+    let childrenOfStage = stage.children;    // this should be an array of the all children of our stage
+    let urlOfImage = childrenOfStage[0].costume.url;    // this is the url, i.e path to our image on the stage
+    let pathToImgWeWantToExtrude = new Image(); // here we create an image
+    pathToImgWeWantToExtrude.src = urlOfImage; // we set the source of the image to the url above if its not null
+
+    console.log(pathToImgWeWantToExtrude);
+
+    //Todo below call to commented out function will
+    // will make the post request to the server with the image we wish to extrude
+    //doActualExtrusionOfImage(pathToImgWeWantToExtrude, 0, 0); // we pass the image to the function that does the extrusion
+
+}
+
+
+
 IDE_Morph.prototype.projectMenu = function () {
     var menu,
         myself = this,
@@ -2695,27 +2817,29 @@ IDE_Morph.prototype.projectMenu = function () {
     menu.addItem('Save As...', 'saveProjectsBrowser');
 
     // // Button to save project as STL for 3D printing
-    // menu.addItem('Export as STL',
-    //     function (){
-    //         console.log("Exporting project as STL for 3D printing");
-    //         // Below we call our costume function and pass in the name of the project
+     menu.addItem('Export as STL',
+         function (){
+             console.log("Exporting project as STL for 3D printing");
+             // Below we call our costume function and pass in the name of the project
     //         console.log("my project name is " + myself.projectName);
-    //         try {
-    //             this.exportProjectAsSTL();
-    //         } catch (e) {
-    //             console.log("Error trying to export file was " + e);
-    //         }
-    // });
+             try {
+                 this.exportProjectAsSTL();
+             } catch (e) {
+                 console.log("Error trying to export file was " + e);
+             }
+     });
 
     //
 
-    // // Button to start and end collaboration using togetherjs
-    // menu.addItem('Collaboration',
-    //     function () {
-    //         console.log("Starting collaboration");
-    //         TogetherJS(this); return false;
-    //     });
-    // //
+
+    //menu.addItem(
+    //    'Export 2D as 3D STL',
+    //    function () {
+    //        let myselfToPassToOurFunction = myself;
+    //        extruding2D(myselfToPassToOurFunction);
+    //    }
+    //);
+
     menu.addLine();
 
     menu.addItem(
@@ -2831,9 +2955,24 @@ IDE_Morph.prototype.projectMenu = function () {
         'show different default scripts'
     );
 
+    let submenu = new MenuMorph(myself);
+
+    // submenu.addItem('Testing',
+    //     function () {
+    //         console.log("submenu worked");
+    //     },
+    //     'testing submenu'
+    // );
+
+    menu.addHoverItem(
+        'Load Costume...            >',
+            submenu
+    );
+
+
     if (this.currentSprite instanceof SpriteMorph) {
         // SpriteMorph
-        menu.addItem(
+        submenu.addItem(
             '2D ' + localize(graphicsName) + '...',
             function () {
             
@@ -2889,7 +3028,7 @@ IDE_Morph.prototype.projectMenu = function () {
             'Select a 2D costume from the media library'
         );
 
-        menu.addItem(
+        submenu.addItem(
             '3D ' + localize(graphicsName) + '...',
             function () {
                 var dir = config.asset_path + graphicsName + '3D',
@@ -3085,7 +3224,7 @@ IDE_Morph.prototype.aboutCSnap = function () {
     aboutTxt = 'CSnap 1.0\nCSDTs with Snap!\n\n'
         + 'Culturally Situated Design Tools (CSDTs) were developed at RPI with support from the\n'
         + 'National Science Foundation. In 2014 the Java versions were ported to the Snap!\n'
-        + 'codebase created by Jens Mönig, which is based on the Scratch interface'
+        + 'codebase created by Jens Mönig, which is based on the Scratch interface';
 
     noticeTxt = localize('License')
         + '\n\n'
@@ -4271,24 +4410,47 @@ IDE_Morph.prototype.exportProject = function (name, plain) {
 IDE_Morph.prototype.exportProjectAsSTL = function () {
     let menu;
     // Testing to see what world is
-    console.log(world);
+    // console.log(world);
     try {
                 menu = this.showMessage('Exporting as STL');
-                let scene = copy(this.stage.scene);
-                // console.log("Scene is: " + scene);
 
+
+                let stage = this.children[4];
+                //can't really guarantee that it'll always be the 4th child, but w/e
+
+                console.log("rendering image...");
+                let image = stage.fullImageClassic().toDataURL();
+                //NOTE: fullImageClassic is what actually renders the image
+
+                let filename = this.projectName + ".stl";
+                console.log("filename = " + filename);
+
+                let directory = "" + filename;
+                console.log("directory set at: " + directory);
+                //change directory as needed here
+
+                let STL_options = {};
+                //TODO: adjust STL conversion options here
+
+                console.log("initializing STL exporter...");
                 let exporter = new THREE.STLExporter();
-                // console.log("Exporter: " + exporter);
 
-                let exportedScene = exporter.parse(scene);
+                console.log("parsing image...");        //directory, filename
+                exporter.parse(image, "test.stl", "test.stl", STL_options);
+/*
+                let exportedScene = exporter.parse(image, "test.stl", "test.stl", STL_options);
+
                 let blob = new Blob( [exportedScene], { type: 'text/plain'});
+
+                console.log("saving file as " + filename);
                 saveAs(blob, (this.projectName ? this.projectName : '3DCSDT') + '.stl');
+*/
 
                 menu.destroy();
                 this.showMessage('Exported!', 1);
     } catch (err) {
                 this.showMessage('Export failed: ' + err);
-                console.log(err)
+                console.log("Export error: " +  err);
     }
 };
 
@@ -4603,7 +4765,7 @@ IDE_Morph.prototype.getURL = function (url) {
     } catch (err) {
         myself.showMessage(err);
         console.log(err);
-        return;
+
     }
 };
 
@@ -5299,7 +5461,7 @@ ProjectDialogMorph.prototype.getGoalProjectList = function () {
 	for (var i = 0; i < JSON_object.length; i++){
 		//preload images
 		thumbnail = new Image();
-		thumbnail.src = JSON_object[i].thumb_url
+		thumbnail.src = JSON_object[i].thumb_url;
 		dta = {
 			name: JSON_object[i].name,
 			img: JSON_object[i].img_url,
@@ -5315,7 +5477,7 @@ ProjectDialogMorph.prototype.getGoalProjectList = function () {
     for (var i = 0; i < JSON_object.length; i++){
         //preload images
         thumbnail = new Image();
-        thumbnail.src = JSON_object[i].thumb_url
+        thumbnail.src = JSON_object[i].thumb_url;
         dta = {
             name: JSON_object[i].name,
             img: JSON_object[i].img_url,
@@ -5840,7 +6002,6 @@ SpriteIconMorph.prototype.init = function (aSprite, aTemplate) {
             IDE_Morph.prototype.frameColor,
             IDE_Morph.prototype.frameColor
         ];
-
     }
 
     action = function () {
@@ -6036,12 +6197,59 @@ SpriteIconMorph.prototype.userMenu = function () {
         menu.addItem(
             'pic...',
             function () {
-                world.children[0].saveFileAs(myself.object.fullImageClassic().toDataURL(), 'image/png', world.children[0].projetName + ' Stage');
+                world.children[0].saveFileAs(myself.object.fullImageClassic().toDataURL(), 'image/png', world.children[0].projectName + ' Stage');
             },
             'open a new window\nwith a picture of the stage'
         );
+
+//this code is last done by Jimmy Ruan
+//reach me @	773-280-1417
+//				jiruan@umich.edu (may or may not be reachable after I graduated)
+
+        //Adds a menu option to export the stage rendering as an STL
+        //<jimmy's code>
+        menu.addItem(
+            "export as STL",
+            function() {
+                try {
+                    console.log("rendering image...");
+                    let renderedImageURL = myself.object.fullImageClassic().toDataURL();
+                    //NOTE: fullImageClassic is what actually renders the image
+                    let modelFileName = world.children[0].projectName + ".stl";
+                    console.log("filename = " + modelFileName);
+
+                    let modelURL = "test.stl";
+                    //let modelURL = [directory] + modelFileName; //change  directory to point to where STL files are stored;
+                    //eg: adinkra.stl if project name is adinkra
+                    console.log("directory set at: " + modelURL);
+
+                    let STL_options = {};
+                    //TODO: adjust STL options here
+
+                    console.log("initializing STL exporter...");
+                    let exporter = new STLExporter();
+
+                    console.log("parsing image...");
+                    exporter.parse(renderedImageURL, modelURL, modelFileName, STL_options);
+                } catch (err) {
+                        console.log("Export error: " + err);
+                }
+
+                /*
+                let blob = new Blob( [STLFile], { type: 'model/stl'});
+
+                console.log("saving file as " + modelFileName);
+                saveAs(blob, modelFileName);
+                */
+
+            },
+            "render the stage and turn it into an STL file"
+        );
+        //</jimmy's code>
+
         return menu;
     }
+
     if (!(this.object instanceof SpriteMorph)) {return null; }
     menu.addItem("show", 'showSpriteOnStage');
     menu.addLine();
