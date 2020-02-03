@@ -114,6 +114,10 @@ var Costumes_2D = {
     "Animals": {
         "directory": "animals",
         "src": ["bear.png", "buffalo.png", "deer.png", "eagle.png", "loon.png"]
+    },
+    "Adinkra": {
+        "directory": "adinkra",
+        "src": ["adinkrahene.png", "akokonan.png", "akoma.png", "ananse.png", "asaseyeduru.png", "aya.png", "dwennimmen.png", "epa.png", "funtunfunefu.png", "gyenayme.png", "mmeredane.png", "mpatapo.png", "mpuannum.png", "odonnyewfiekwan.png", "sankofa.png", "sepow.png"]
     }
 };
 
@@ -2834,7 +2838,7 @@ IDE_Morph.prototype.projectMenu = function () {
     if (this.currentSprite instanceof SpriteMorph) {
         // SpriteMorph
         menu.addItem(
-            '2D ' + localize(graphicsName) + '...',
+            '2D ' + localize(graphicsName) + ' Library...',
             function () {
             
                 let directory = config.asset_path + graphicsName,
