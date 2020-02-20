@@ -233,7 +233,7 @@ IDE_Morph.prototype.init = function (isAutoFill) {
 
     // additional properties:
     this.cloudMsg = null;
-    this.source = 'local';
+    this.source = 'cloud';
     this.serializer = new SnapSerializer();
 
     this.globalVariables = new VariableFrame();
@@ -4752,7 +4752,7 @@ ProjectDialogMorph.prototype.buildContents = function () {
     }
     else{
         this.addSourceButton('cloud', localize('Cloud'), 'cloud');
-        this.addSourceButton('local', localize('Browser'), 'storage');
+        // this.addSourceButton('local', localize('Browser'), 'storage');
         if (this.task === 'open') {
             this.addSourceButton('examples', localize('Examples'), 'poster');
         }
