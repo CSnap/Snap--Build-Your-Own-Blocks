@@ -338,8 +338,8 @@ IDE_Morph.prototype.openIn = function (world) {
     // dynamic notifications from non-source text files
     // has some issues, commented out for now
     /*
-    this.cloudMsg = getURL('http://csdt.rpi.edu/cloudmsg.txt');
-    motd = getURL('http://csdt.rpi.edu/motd.txt');
+    this.cloudMsg = getURL('http://csdt.org/cloudmsg.txt');
+    motd = getURL('http://csdt.org/motd.txt');
     if (motd) {
         this.inform('CSnap', motd);
     }
@@ -2252,7 +2252,7 @@ IDE_Morph.prototype.snapMenu = function () {
     menu.addItem(
         'CSnap website',
         function () {
-            window.open('http://csdt.rpi.edu/', 'CSnapWebsite');
+            window.open('http://csdt.org/', 'CSnapWebsite');
         }
     );
 /* XXX: If we really need this in the future, we should link to the CSnap GitHub page.
@@ -2788,7 +2788,7 @@ IDE_Morph.prototype.projectMenu = function () {
         function () {
             myself.droppedText(
                 myself.getURL(
-                    'https://csdt.rpi.edu/csnapsource/tools.xml'
+                    'https://csdt.org/csnapsource/tools.xml'
                 ),
                 'tools'
             );
@@ -2800,11 +2800,11 @@ IDE_Morph.prototype.projectMenu = function () {
         function () {
             // read a list of libraries from an external file,
             var libMenu = new MenuMorph(this, 'Import library'),
-                libUrl = 'https://csdt.rpi.edu/csnapsource/libraries/' +
+                libUrl = 'https://csdt.org/csnapsource/libraries/' +
                     'LIBRARIES';
 
             function loadLib(name) {
-                var url = 'https://csdt.rpi.edu/csnapsource/libraries/'
+                var url = 'https://csdt.org/csnapsource/libraries/'
                         + name
                         + '.xml';
                 myself.droppedText(myself.getURL(url), name);
@@ -4528,7 +4528,7 @@ IDE_Morph.prototype.cloudError = function () {
         // and notify the user about it,
         // if none is found, show an error dialog box
         var response = responseText,
-            explanation = getURL('http://csdt.rpi.edu/cloudmsg.txt');
+            explanation = getURL('http://csdt.org/cloudmsg.txt');
         if (myself.shield) {
             myself.shield.destroy();
             myself.shield = null;

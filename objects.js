@@ -1030,7 +1030,7 @@ SpriteMorph.prototype.initBlocks = function () {
             type: 'reporter',
             category: 'sensing',
             spec: 'http:// %s',
-            defaults: ['csdt.rpi.edu']
+            defaults: ['csdt.org']
         },
         reportIsFastTracking: {
             type: 'predicate',
@@ -8055,3 +8055,4 @@ function round10(val,exp)
 SpriteMorph.prototype.flatLineEnds = function(bool){
     SpriteMorph.prototype.useFlatLineEnds = bool;
 }
+

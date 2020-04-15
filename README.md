@@ -1,7 +1,7 @@
 CSnap: Bringing Culture and Social Justice to Programming
 =========================================================
 
-http://csdt.rpi.edu
+http://csdt.org
 
 License
 -------
