@@ -695,6 +695,11 @@ SpriteMorph.prototype.initBlocks = function () {
             category: 'pen',
             spec: 'fix borders'
         },
+		flatLineEnds: {
+            type: 'command',
+            category: 'pen',
+            spec: 'flat line end? %b'
+        },
         // 3D shapes
         renderSphere: {
             type: 'command',
@@ -1999,6 +2004,7 @@ SpriteMorph.prototype.blockTemplates = function (category) {
         blocks.push('-');
         blocks.push(block('doStamp'));
         blocks.push(block('smoothBorders'));
+        blocks.push(block('flatLineEnds'));
 
         if (this.costume && this.costume.is3D) {
             blocks.push(block('clear'));
@@ -6476,7 +6482,7 @@ function Costume(canvas, name, rotationCenter, url, is3D, is3dSwitchable) {
     // newly added for 3D
     this.url = url;
     this.is3D = is3D;
-    this.is3dSwitchable = is3dSwitchable
+    this.is3dSwitchable = is3dSwitchable;
     this.geometry = null;
     this.map = null;
 }
@@ -8042,4 +8048,10 @@ function round10(val,exp)
 {
 	var pow = Math.pow(10,exp);
 	return Math.round(val/pow)*pow;
+}
+
+
+//CSDT Blocks
+SpriteMorph.prototype.flatLineEnds = function(bool){
+    SpriteMorph.prototype.useFlatLineEnds = bool;
 }
