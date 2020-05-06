@@ -4897,6 +4897,10 @@ StageMorph.prototype.drawNew = function () {
             (this.width() / this.scale - this.costume.width()) / 2,
             (this.height() / this.scale - this.costume.height()) / 2
         );
+            //     ctx.drawImage(
+            // this.costume.contents,0,0,
+            // StageMorph.prototype.dimensions.x, this.height()
+        // );
     }
 };
 
@@ -5932,6 +5936,16 @@ StageMorph.prototype.userMenu = function () {
         },
         'open a new window\nwith a picture of the stage'
     );
+    // save stage with transparent image
+    menu.addItem(
+        "pic without stage...",
+        function () {
+            world.children[0].saveFileAs(myself.trailsCanvas.toDataURL(), 'image/png', world.children[0].projetName + ' image');
+        },
+        'downloads your work with no\n' +
+            'stage image, giving it a \ntransparent background',
+    );
+
     if (shiftClicked) {
         menu.addLine();
         menu.addItem(
