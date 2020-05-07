@@ -4838,6 +4838,8 @@ StageMorph.prototype.init = function (globals) {
     this.shownObjects = new List();
     this.hiddenObjects = new List();
     this.init3D();
+
+    this.stageStretch = false;
 };
 
 // StageMorph scaling
@@ -4892,15 +4894,22 @@ StageMorph.prototype.drawNew = function () {
     if (this.costume) {
         ctx = this.image.getContext('2d');
         ctx.scale(this.scale, this.scale);
-        ctx.drawImage(
-            this.costume.contents,
-            (this.width() / this.scale - this.costume.width()) / 2,
-            (this.height() / this.scale - this.costume.height()) / 2
-        );
-            //     ctx.drawImage(
-            // this.costume.contents,0,0,
-            // StageMorph.prototype.dimensions.x, this.height()
-        // );
+        if(this.stageStretch){
+            console.log('scale Image');
+            ctx.drawImage(
+                this.costume.contents,0,0,
+                StageMorph.prototype.dimensions.x, this.height()
+            );
+        }else{
+            console.log('default');
+            ctx.drawImage(
+                this.costume.contents,
+                (this.width() / this.scale - this.costume.width()) / 2,
+                (this.height() / this.scale - this.costume.height()) / 2
+            );
+        }
+
+
     }
 };
 

@@ -274,7 +274,7 @@ IDE_Morph.prototype.init = function (isAutoFill) {
     this.color = this.backgroundColor;
 
 	this.corralBarOldX = "";
-	this.corralBarOldY = "";
+    this.corralBarOldY = "";
 };
 
 IDE_Morph.prototype.openIn = function (world) {
@@ -2467,9 +2467,17 @@ IDE_Morph.prototype.settingsMenu = function () {
     );
     menu.addLine();
     addPreference(
+        'Scale stage image',
+        'userSetStageStretch',
+         this.stage.stageStretch,
+        'uncheck to default stage image\nto a max of initial width',
+        'check to scale stage image\nto current stage width',
+        false
+    );
+    addPreference(
         'Blurred shadows',
         'toggleBlurredShadows',
-        useBlurredShadows,
+        IDE_Morph.prototype.useBlurredShadows,
         'uncheck to use solid drop\nshadows and highlights',
         'check to use blurred drop\nshadows and highlights',
         true
@@ -4111,6 +4119,12 @@ IDE_Morph.prototype.userSetStageSize = function () {
     );
 };
 
+// IDE_Morph stage size manipulation
+
+IDE_Morph.prototype.userSetStageStretch = function () {
+    this.stage.stageStretch = !this.stage.stageStretch;
+};
+
 IDE_Morph.prototype.setStageExtent = function (aPoint) {
     var myself = this,
         world = this.world(),
@@ -4752,7 +4766,7 @@ ProjectDialogMorph.prototype.buildContents = function () {
     }
     else{
         this.addSourceButton('cloud', localize('Cloud'), 'cloud');
-        // this.addSourceButton('local', localize('Browser'), 'storage');
+        // this.addSourceButton('local', localize('Browser'), 'storage'); Browser Button
         if (this.task === 'open') {
             this.addSourceButton('examples', localize('Examples'), 'poster');
         }
