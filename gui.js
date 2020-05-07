@@ -4766,6 +4766,7 @@ ProjectDialogMorph.prototype.buildContents = function () {
     }
     else{
         this.addSourceButton('cloud', localize('Cloud'), 'cloud');
+        this.addSourceButton('disk', localize('Computer'), 'storage');
         // this.addSourceButton('local', localize('Browser'), 'storage'); Browser Button
         if (this.task === 'open') {
             this.addSourceButton('examples', localize('Examples'), 'poster');
@@ -5064,10 +5065,22 @@ ProjectDialogMorph.prototype.setSource = function (source) {
     case 'local':
         this.projectList = this.getLocalProjectList();
         break;
+    case 'disk':
+            if (this.task === 'save') {
+                this.projectList = [];
+            } else {
+                this.destroy();
+                this.ide.importLocalFile();
+                return;
+            }
+            break;
     }
     this.listField.destroy();
     this.classroomListField.destroy();
-
+    
+    if (this.source === 'disk') {
+        this.listField.hide();
+    }
 	if(this.source === 'goals'){
 		this.listField = new ListMorph(
 			this.projectList,
@@ -5555,7 +5568,11 @@ ProjectDialogMorph.prototype.saveProject = function () {
                 this.ide.setProjectName(name);
                 myself.saveCloudProject();
             }
-        } else { // 'local'
+        }else if (this.source === 'disk') {
+            this.ide.exportProject(name, false);
+            this.ide.source = 'disk';
+            this.destroy();
+        }else { // 'local'
             if (detect(
                     this.projectList,
                     function (item) {return item.name === name; }
