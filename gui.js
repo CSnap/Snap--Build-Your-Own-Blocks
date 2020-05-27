@@ -2698,21 +2698,6 @@ IDE_Morph.prototype.projectMenu = function () {
     }
     menu.addItem('Save As...', 'saveProjectsBrowser');
 
-    // // Button to save project as STL for 3D printing
-    // menu.addItem('Export as STL',
-    //     function (){
-    //         console.log("Exporting project as STL for 3D printing");
-    //         // Below we call our costume function and pass in the name of the project
-    //         console.log("my project name is " + myself.projectName);
-    //         try {
-    //             this.exportProjectAsSTL();
-    //         } catch (e) {
-    //             console.log("Error trying to export file was " + e);
-    //         }
-    // });
-
-    //
-
     // // Button to start and end collaboration using togetherjs
     // menu.addItem('Collaboration',
     //     function () {
@@ -2781,6 +2766,19 @@ IDE_Morph.prototype.projectMenu = function () {
         function () {myself.exportGlobalBlocks(); },
         'show global custom block definitions as XML\nin a new browser window'
     );
+
+    // Button to save project as STL for 3D printing
+    menu.addItem('Export as STL',
+        function (){
+            console.log("Exporting project as STL for 3D printing");
+            // Below we call our costume function and pass in the name of the project
+            console.log("my project name is " + myself.projectName);
+            try {
+                this.exportProjectAsSTL();
+            } catch (e) {
+                console.log("Error trying to export file was " + e);
+            }
+    });
 
     menu.addLine();
     menu.addItem(
