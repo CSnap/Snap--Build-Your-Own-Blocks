@@ -91,6 +91,8 @@ var Context;
 var VariableFrame;
 var UpvarReference;
 
+var wheelMap = {};
+
 function snapEquals(a, b) {
     if (a instanceof List || (b instanceof List)) {
         if (a instanceof List && (b instanceof List)) {
@@ -1547,6 +1549,36 @@ Process.prototype.doRepeat = function (counter, body) {
     }
 
     this.pushContext();
+};
+
+Process.prototype.createWheel = function(input, body){
+    console.log(input)
+    var args = this.context.inputs,
+    outer = this.context.outerContext, // for tail call elimination
+    isLambda = this.context.isLambda,
+    isImplicitLambda = this.context.isImplicitLambda,
+    isCustomBlock = this.context.isCustomBlock,
+    upvars = this.context.upvars;
+
+    this.doSetVar(input, []);
+
+    this.popContext();
+    if (true) {
+        console.log(args);
+        console.log(args.length);
+        if (args[1]) {
+        console.log(args[1]);
+            this.pushContext(args[1].blockSequence(), outer);
+            this.context.isLambda = isLambda;
+            this.context.isImplicitLambda = isImplicitLambda;
+            this.context.isCustomBlock = isCustomBlock;
+            this.context.upvars = new UpvarReference(upvars);
+        }
+    }
+    console.log("DO IF: ");
+    // console.log(this.context.variables);
+    this.pushContext();
+    console.log(this.context.variables);
 };
 
 Process.prototype.doUntil = function (goalCondition, body) {

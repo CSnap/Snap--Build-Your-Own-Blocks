@@ -499,6 +499,13 @@ SpriteMorph.prototype.initBlocks = function () {
         },
 
         // Sound
+        createWheel: {
+            type: 'command',
+            category: 'sound',
+            spec: 'create wheel test %var %c',
+            default: [3],
+        },
+
         playSound: {
             type: 'command',
             category: 'sound',
@@ -1932,7 +1939,7 @@ SpriteMorph.prototype.blockTemplates = function (category) {
     /////////////////////////////////
 
     } else if (cat === 'sound') {
-
+        blocks.push(block('createWheel'));
         blocks.push(block('playSound'));
         blocks.push(block('doPlaySoundUntilDone'));
         blocks.push(block('doStopAllSounds'));
@@ -5566,7 +5573,7 @@ StageMorph.prototype.blockTemplates = function (category) {
     /////////////////////////////////
 
     } else if (cat === 'sound') {
-
+        blocks.push(block('createWheel'));
         blocks.push(block('playSound'));
         blocks.push(block('doPlaySoundUntilDone'));
         blocks.push(block('doStopAllSounds'));
@@ -7020,7 +7027,7 @@ function Sound(audio, name, volume) {
     this.audio = audio; // mandatory
     this.name = name || "Sound";
     this.volume = volume || 100;
-}
+};
 
 Sound.prototype.play = function () {
     // return an instance of an audio element which can be terminated
