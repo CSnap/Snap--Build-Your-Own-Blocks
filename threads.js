@@ -1559,15 +1559,15 @@ Process.prototype.createWheel = function(input, body){
     isImplicitLambda = this.context.isImplicitLambda,
     isCustomBlock = this.context.isCustomBlock,
     upvars = this.context.upvars;
-
-    this.doSetVar(input, []);
-
+    let wheelEntry = {buffer: [], duration: 0.0};
+    wheelMap[input] = wheelEntry;
+    this.doSetVar(input, wheelEntry);
+    console.log(wheelMap);
     this.popContext();
     if (true) {
         console.log(args);
         console.log(args.length);
         if (args[1]) {
-        console.log(args[1]);
             this.pushContext(args[1].blockSequence(), outer);
             this.context.isLambda = isLambda;
             this.context.isImplicitLambda = isImplicitLambda;
@@ -1575,8 +1575,7 @@ Process.prototype.createWheel = function(input, body){
             this.context.upvars = new UpvarReference(upvars);
         }
     }
-    console.log("DO IF: ");
-    // console.log(this.context.variables);
+
     this.pushContext();
     console.log(this.context.variables);
 };
@@ -3054,8 +3053,11 @@ VariableFrame.prototype.setVar = function (name, value) {
     declared explicitly (e.g. through a "script variables" block),
     before they can be accessed.
 */
+
     var frame = this.find(name);
     if (frame) {
+        console.log("WHEL IS: ");
+        console.log(frame.vars[name]);
         frame.vars[name] = value;
     }
 };
