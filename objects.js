@@ -504,7 +504,7 @@ SpriteMorph.prototype.initBlocks = function () {
         createWheel: {
             type: 'command',
             category: 'sound',
-            spec: 'create wheel test %var %c',
+            spec: 'create wheel %var %c',
             default: [3],
         },
 
@@ -529,7 +529,8 @@ SpriteMorph.prototype.initBlocks = function () {
         playWheel: {
             type: 'command',
             category: 'sound',
-            spec: 'play wheel %var',
+            spec: 'play wheel %var , %n time(s)',
+            defaults:[, 1],
         },
 
         playSound: {
@@ -2870,34 +2871,43 @@ SpriteMorph.prototype.halfBeat = function(){
     return 0.5;
 };
 
-SpriteMorph.prototype.playWheel = function(wheelName){
-    console.log(wheelName);
+SpriteMorph.prototype.playWheel = function(wheelName, repeatNumber){
+    // if repeatNumber is 0, don't play anything
+    if(repeatNumber == 0){
+        return;
+    }
 
-       // check if there is an instanced wheel in WheelMap
-       if (!(wheelMap.hasOwnProperty(wheelName))){
-        console.log("Wheel not found/not instantiated");
-        throw new Error("Wheel not found/not instantiated");
+    // check if there is an instanced wheel in WheelMap
+    if (!(wheelMap.hasOwnProperty(wheelName))){
+    console.log("Wheel not found/not instantiated");
+    throw new Error("Wheel not found/not instantiated");
     }
 
     if(wheelMap[wheelName].buffer.length == 0){
         console.log("Wheel is empty!");
         throw new Error("Wheel is empty!");
     }
-
-    /* TODO- create a data structure to store all of the active audio buffers nodes
-    able to look up by wheelName
-    If there, no need to recompile (do code below), only need to call audioBufferNode.stop(), then audioBufferNode.start()
-    If not there, proceeed with the code below
-    */
     
     let wheelDuration = wheelMap[wheelName].duration;
     console.log(wheelMap[wheelName]);
-    console.log(wheelMap[wheelName].buffer);
 
- 
+    let numberOfBuffers = wheelMap[wheelName].buffer;
+    console.log(numberOfBuffers);
+    console.log(numberOfBuffers.length);
+    let amountOfBufs = numberOfBuffers.length;
+
+    // // for number of repeats, push into wheelMap[wheelName].buffer
+    for (let i=1; i<repeatNumber; ++i){
+        console.log("i is " + i);
+        for(let buff=0; buff<amountOfBufs; ++buff){
+            console.log(numberOfBuffers[buff]);
+            wheelMap[wheelName].buffer.push(numberOfBuffers[buff]);
+        }
+    }
+
     console.log(wheelMap[wheelName].buffer.length);
     // wheelDuration = long it takes to play every sound in the wheel (audio array) in seconds
-    let wheelToPlay = audioContext.createBuffer(1, 48000*(wheelDuration), 48000);
+    let wheelToPlay = audioContext.createBuffer(1, 48000*(wheelDuration*repeatNumber), 48000);
     console.log("Length of wheel: ");
     console.log(wheelDuration);
 
