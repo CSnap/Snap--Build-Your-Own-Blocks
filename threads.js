@@ -1580,6 +1580,10 @@ Process.prototype.createWheel = function(input, body){
     console.log(this.context.variables);
 };
 
+Process.prototype.testWithModules = function(){
+    console.log("HELLO ANGELA");
+}
+
 Process.prototype.doUntil = function (goalCondition, body) {
     if (goalCondition) {
         this.popContext();

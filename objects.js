@@ -142,7 +142,7 @@ var SpriteHighlightMorph;
 var _3DRotationX = 0, _3DRotationY = 0, _3DRotationZ = 0;
 
 let soundBuffer = {};
-let audioContext = new AudioContext();
+let makeAudioContext = new AudioContext();
 // SpriteMorph /////////////////////////////////////////////////////////
 
 // I am a scriptable object
@@ -505,32 +505,32 @@ SpriteMorph.prototype.initBlocks = function () {
             type: 'command',
             category: 'sound',
             spec: 'create wheel %var %c',
-            default: [3],
+            default: [3]
         },
 
         putSound: {
             type: 'command',
             category: 'sound', // trigger sound, place sound
-            spec: 'put sound %snd for a %n in wheel %var',
+            spec: 'sound %snd for a %n in wheel %var'
         },
 
         fullBeat:{
             type: 'reporter',
             category: 'sound',
-            spec: 'full beat',
+            spec: 'full beat'
         },
 
         halfBeat:{
             type: 'reporter',
             category: 'sound',
-            spec: 'half beat',
+            spec: 'half beat'
         },
 
         playWheel: {
             type: 'command',
             category: 'sound',
             spec: 'play wheel %var , %n time(s)',
-            defaults:[, 1],
+            defaults:[, 1]
         },
 
         playSound: {
@@ -2907,7 +2907,7 @@ SpriteMorph.prototype.playWheel = function(wheelName, repeatNumber){
 
     console.log(wheelMap[wheelName].buffer.length);
     // wheelDuration = long it takes to play every sound in the wheel (audio array) in seconds
-    let wheelToPlay = audioContext.createBuffer(1, 48000*(wheelDuration*repeatNumber), 48000);
+    let wheelToPlay = makeAudioContext.createBuffer(1, 48000*(wheelDuration*repeatNumber), 48000);
     console.log("Length of wheel: ");
     console.log(wheelDuration);
 
@@ -2926,9 +2926,9 @@ SpriteMorph.prototype.playWheel = function(wheelName, repeatNumber){
     console.log(wheelToPlay.getChannelData(0));
 
     // create audioSourceNode to play and  TODO- push into active buffer node data structure
-    let playNode = audioContext.createBufferSource();
+    let playNode = makeAudioContext.createBufferSource();
     playNode.buffer = wheelToPlay;
-    playNode.connect(audioContext.destination);
+    playNode.connect(makeAudioContext.destination);
     this.activeWheels[wheelName] = playNode;
     // play audio
     playNode.start();
@@ -4250,6 +4250,7 @@ SpriteMorph.prototype.getTimer = function () {
 
 SpriteMorph.prototype.getTempo = function () {
     var stage = this.parentThatIsA(StageMorph);
+    // this.processes
     if (stage) {
         return stage.getTempo();
     }
@@ -7183,7 +7184,7 @@ function Sound(audio, name, volume) {
               let error = function(err) {
                 res(null, err);
               };
-              audioContext.decodeAudioData(request.response, success, error);
+              makeAudioContext.decodeAudioData(request.response, success, error);
         };
         request.send();
     };
