@@ -501,7 +501,6 @@ SpriteMorph.prototype.initBlocks = function () {
         },
 
         // Sound
-        // TODO- Let Create Wheel be defined in CSNAP MODULE
         createWheel: {
             type: 'command',
             category: 'sound',
