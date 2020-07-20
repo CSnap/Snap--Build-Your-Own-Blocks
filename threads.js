@@ -1552,7 +1552,6 @@ Process.prototype.doRepeat = function (counter, body) {
 };
 
 Process.prototype.createWheel = function(input, body){
-    console.log(input)
     var args = this.context.inputs,
     outer = this.context.outerContext, // for tail call elimination
     isLambda = this.context.isLambda,
@@ -1562,11 +1561,8 @@ Process.prototype.createWheel = function(input, body){
     let wheelEntry = {buffer: [], duration: 0.0};
     wheelMap[input] = wheelEntry;
     this.doSetVar(input, wheelEntry);
-    console.log(wheelMap);
     this.popContext();
     if (true) {
-        console.log(args);
-        console.log(args.length);
         if (args[1]) {
             this.pushContext(args[1].blockSequence(), outer);
             this.context.isLambda = isLambda;
@@ -1577,12 +1573,7 @@ Process.prototype.createWheel = function(input, body){
     }
 
     this.pushContext();
-    console.log(this.context.variables);
 };
-
-Process.prototype.testWithModules = function(){
-    console.log("HELLO ANGELA");
-}
 
 Process.prototype.doUntil = function (goalCondition, body) {
     if (goalCondition) {
@@ -3060,8 +3051,6 @@ VariableFrame.prototype.setVar = function (name, value) {
 
     var frame = this.find(name);
     if (frame) {
-        console.log("WHEL IS: ");
-        console.log(frame.vars[name]);
         frame.vars[name] = value;
     }
 };

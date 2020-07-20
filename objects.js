@@ -501,38 +501,13 @@ SpriteMorph.prototype.initBlocks = function () {
         },
 
         // Sound
+        // TODO- Let Create Wheel be defined in CSNAP MODULE
         createWheel: {
             type: 'command',
             category: 'sound',
             spec: 'create wheel %var %c',
             default: [3]
         },
-
-        putSound: {
-            type: 'command',
-            category: 'sound', // trigger sound, place sound
-            spec: 'sound %snd for a %n in wheel %var'
-        },
-
-        fullBeat:{
-            type: 'reporter',
-            category: 'sound',
-            spec: 'full beat'
-        },
-
-        halfBeat:{
-            type: 'reporter',
-            category: 'sound',
-            spec: 'half beat'
-        },
-
-        playWheel: {
-            type: 'command',
-            category: 'sound',
-            spec: 'play wheel %var , %n time(s)',
-            defaults:[, 1]
-        },
-
         playSound: {
             type: 'command',
             category: 'sound',
@@ -1968,10 +1943,6 @@ SpriteMorph.prototype.blockTemplates = function (category) {
 
     } else if (cat === 'sound') {
         blocks.push(block('createWheel'));
-        blocks.push(block('putSound'));
-        blocks.push(block('fullBeat'));
-        blocks.push(block('halfBeat'));
-        blocks.push(block('playWheel'));
         blocks.push(block('playSound'));
         blocks.push(block('doPlaySoundUntilDone'));
         blocks.push(block('doStopAllSounds'));
@@ -2828,110 +2799,6 @@ SpriteMorph.prototype.wearTexture = function (texture) {
 SpriteMorph.prototype.addSound = function (audio, name) {
     var volume = this.volume;
     this.sounds.add(new Sound(audio, name, volume));
-};
-
-SpriteMorph.prototype.putSound = function(soundInput, timeInput, wheelName){
-    console.log('PUT SOUND');
-
-    // check if there is an instanced wheel in WheelMap
-    if (!(wheelMap.hasOwnProperty(wheelName))){
-        console.log("Wheel not found/not instantiated");
-        throw new Error("Wheel not found/not instantiated");
-    }
-
-    // get sound buffer under soundInput name
-   console.log(this.getTempo());
-    let secondsPerBeat = (60.0/this.getTempo());
-    secondsPerBeat *= timeInput;
-    console.log(secondsPerBeat);
-    console.log(soundBuffer[soundInput]);
-    let addedSound = soundBuffer[soundInput].getChannelData(0).slice(0, 48000*secondsPerBeat);
-    console.log(addedSound);
-    // emplace to back of wheelMap
-    //   setWheel.set(testSlice, i*48000*secondsPerBeat);
-    console.log(wheelMap[wheelName].buffer);
-    // push individual durations of sounds (half beat or full beat)
-    wheelMap[wheelName].buffer.push({buffer: addedSound, duration: secondsPerBeat});
-
-    // wheelMap[wheelName].buffer.set(addedSound, wheelMap[wheelName].duration * 48000);
-    // for (obj in wheelMap[wheelName].buffer){
-    //     console.log(obj);
-    // }
-    // add amount of time to duration
-    wheelMap[wheelName].duration +=secondsPerBeat;
-    console.log(wheelMap);
-
-};
-
-SpriteMorph.prototype.fullBeat = function(){
-    return 1.0;
-};
-
-SpriteMorph.prototype.halfBeat = function(){
-    return 0.5;
-};
-
-SpriteMorph.prototype.playWheel = function(wheelName, repeatNumber){
-    // if repeatNumber is 0, don't play anything
-    if(repeatNumber == 0){
-        return;
-    }
-
-    // check if there is an instanced wheel in WheelMap
-    if (!(wheelMap.hasOwnProperty(wheelName))){
-    console.log("Wheel not found/not instantiated");
-    throw new Error("Wheel not found/not instantiated");
-    }
-
-    if(wheelMap[wheelName].buffer.length == 0){
-        console.log("Wheel is empty!");
-        throw new Error("Wheel is empty!");
-    }
-    
-    let wheelDuration = wheelMap[wheelName].duration;
-    console.log(wheelMap[wheelName]);
-
-    let numberOfBuffers = wheelMap[wheelName].buffer;
-    console.log(numberOfBuffers);
-    console.log(numberOfBuffers.length);
-    let amountOfBufs = numberOfBuffers.length;
-
-    // // for number of repeats, push into wheelMap[wheelName].buffer
-    for (let i=1; i<repeatNumber; ++i){
-        console.log("i is " + i);
-        for(let buff=0; buff<amountOfBufs; ++buff){
-            console.log(numberOfBuffers[buff]);
-            wheelMap[wheelName].buffer.push(numberOfBuffers[buff]);
-        }
-    }
-
-    console.log(wheelMap[wheelName].buffer.length);
-    // wheelDuration = long it takes to play every sound in the wheel (audio array) in seconds
-    let wheelToPlay = makeAudioContext.createBuffer(1, 48000*(wheelDuration*repeatNumber), 48000);
-    console.log("Length of wheel: ");
-    console.log(wheelDuration);
-
-    let durationSoFar = 0
-    for(let i =0; i < wheelMap[wheelName].buffer.length; ++i){
-        let setWheelBuff = wheelToPlay.getChannelData(0);
-        let dataToSet = wheelMap[wheelName].buffer[i];
-        let bufferToSet = dataToSet.buffer;
-        console.log("WHERE TO SET:");
-        console.log(48000 * durationSoFar);
-        // derivative off the Rhythm Wheels GUI, we need to place the slice of audio into amound of time in seconds IN new buffer * 48000
-        setWheelBuff.set(bufferToSet, 48000 * durationSoFar);
-        durationSoFar += dataToSet.duration;
-    }
-
-    console.log(wheelToPlay.getChannelData(0));
-
-    // create audioSourceNode to play and  TODO- push into active buffer node data structure
-    let playNode = makeAudioContext.createBufferSource();
-    playNode.buffer = wheelToPlay;
-    playNode.connect(makeAudioContext.destination);
-    this.activeWheels[wheelName] = playNode;
-    // play audio
-    playNode.start();
 };
 
 SpriteMorph.prototype.playSound = function (name) {
@@ -5346,7 +5213,6 @@ StageMorph.prototype.getTimer = function () {
 
 StageMorph.prototype.setTempo = function (bpm) {
     this.tempo = Math.max(20, (+bpm || 0));
-    console.log(this.tempo);
 };
 
 StageMorph.prototype.changeTempo = function (delta) {
@@ -5712,10 +5578,6 @@ StageMorph.prototype.blockTemplates = function (category) {
 
     } else if (cat === 'sound') {
         blocks.push(block('createWheel'));
-        blocks.push(block('putSound'));
-        blocks.push(block('fullBeat'));
-        blocks.push(block('halfBeat'));
-        blocks.push(block('playWheel'));
         blocks.push(block('playSound'));
         blocks.push(block('doPlaySoundUntilDone'));
         blocks.push(block('doStopAllSounds'));
@@ -7194,14 +7056,7 @@ function Sound(audio, name, volume) {
             console.error("ERROR LOADING SOUND " + this.audio.name);
             return;
         }
-        console.log('SUCCESSFULLY LOADED ' + name);
-        console.log(res.buffer);
         soundBuffer[name] = res.buffer;
-        console.log(this.sounds);
-        console.log(soundBuffer[name].getChannelData(0));
-        console.log("WHEEL MAP: ");
-        console.log(wheelMap);
-
     });
 
 };
