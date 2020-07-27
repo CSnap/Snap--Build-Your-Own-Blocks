@@ -2802,7 +2802,6 @@ SpriteMorph.prototype.wearTexture = function (texture) {
 // SpriteMorph sound management
 
 SpriteMorph.prototype.addSound = function (audio, name) {
-    console.log("ADDING SOUND");
     var volume = this.volume;
     this.sounds.add(new Sound(audio, name, volume));
 };
@@ -2840,11 +2839,8 @@ SpriteMorph.prototype.playSound = function (name) {
 SpriteMorph.prototype.addFile = function(fileToRead){
     let fileReader = new FileReader();
     let fileName = fileToRead.name;
-    console.log("TO ADD A FILE INTO OUR FILE BUFFER");
-    console.log(fileToRead);
     this.files.add(fileToRead);
     // add to dictionary of <name to file>
-    console.log(fileBuffer);
     fileReader.onload = function(e){
         let contents = e.target.result;
         let data = {
@@ -6507,8 +6503,6 @@ SpriteBubbleMorph.prototype.fixLayout = function () {
 // Costume instance creation
 
 function Costume(canvas, name, rotationCenter, url, is3D, is3dSwitchable) {
-    console.log("SVG");
-    console.log(name);
     this.contents = canvas || newCanvas();
     this.shrinkToFit(this.maxExtent);
     this.name = name || null;

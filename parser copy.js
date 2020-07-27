@@ -40,14 +40,4 @@ parser['rw v0.0.2'] = function(opts, ref, lines, wheelNumber) {
       ref.push(soundBuffer[nodeName]);
     }
   }
-  // for (let i = 0; i < data['wheelCount']; i++) {
-  //   let wheel = data['wheels'][i];
-
-  //   ref.wc.wheels[i].setNodeCount(wheel['size']);
-  //   ref.wc.wheels[i].setLoopCount(wheel['loop']);
-
-  //   for (let j = 0; j < wheel['size']; j++) {
-  //     ref.wc.wheels[i].nodes[j].setType(wheel.nodes[j]);
-  //   }
-  // }
 };

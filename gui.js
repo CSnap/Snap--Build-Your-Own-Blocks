@@ -1379,7 +1379,6 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.fixLayout();
     tabBar.add(tab);
 
-// ANGELAS NEW CODE
     tab = new TabMorph(
         tabColors,
         null, // target
@@ -1398,7 +1397,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.drawNew();
     tab.fixLayout();
     tabBar.add(tab);
-// END ANGELA NEW CODE
+
     tabBar.fixLayout();
     tabBar.children.forEach(function (each) {
         each.refresh();
@@ -1453,7 +1452,6 @@ IDE_Morph.prototype.createSpriteEditor = function () {
         this.spriteEditor.acceptsDrops = false;
         this.spriteEditor.contents.acceptsDrops = false;
     } else if (this.currentTab === 'sounds') {
-        console.log("SOUNDS TAB DRAGGING");
         this.spriteEditor = new JukeboxMorph(
             this.currentSprite,
             this.sliderColor
@@ -1464,7 +1462,6 @@ IDE_Morph.prototype.createSpriteEditor = function () {
         this.spriteEditor.acceptDrops = false;
         this.spriteEditor.contents.acceptsDrops = false;
     } else if (this.currentTab == 'files'){
-        console.log("FILES TAB DRAGGING");
         this.spriteEditor = new FileFolderMorph(
             this.currentSprite,
             this.sliderColor
@@ -1475,7 +1472,6 @@ IDE_Morph.prototype.createSpriteEditor = function () {
         this.spriteEditor.acceptDrops = false;
         this.spriteEditor.contents.acceptsDrops = false;
     } else {
-        console.log("ELSE TAB DRAGGING");
         this.spriteEditor = new Morph();
         this.spriteEditor.color = this.groupColor;
         this.spriteEditor.acceptsDrops = true;
@@ -1938,17 +1934,12 @@ IDE_Morph.prototype.droppedSVG = function (anImage, name) {
 };
 
 IDE_Morph.prototype.droppedAudio = function (anAudio, name) {
-    console.log("DROPPING AUDIO ANGELA");
-    console.log(anAudio);
-    console.log(name);
     this.currentSprite.addSound(anAudio, name.split('.')[0]); // up to period
     this.spriteBar.tabBar.tabTo('sounds');
     this.hasChangedMedia = true;
 };
 
 IDE_Morph.prototype.droppedRWFile = function(fileToRead){
-    console.log("DROPPED AN RWFILE");
-    console.log(fileToRead);
     this.currentSprite.addFile(fileToRead);
     this.spriteBar.tabBar.tabTo('files');
     this.hasChangedMedia = true;
@@ -1981,7 +1972,6 @@ IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name) {
     var ypr = document.getElementById('ypr'),
         myself = this,
         suffix = name.substring(name.length - 3);
-console.log(ypr);
     if (suffix.toLowerCase() !== 'ypr') {
         console.log ("RETURNING FROM DROPPED BINARY");
         return; }
@@ -1996,16 +1986,12 @@ console.log(ypr);
     }
 
     if (!ypr) {
-        console.log("CREATING ELEMENT");
         ypr = document.createElement('script');
         ypr.id = 'ypr';
         ypr.onload = function () {loadYPR(anArrayBuffer, name); };
         document.head.appendChild(ypr);
         ypr.src = 'ypr.js';
-        console.log(ypr);
-
     } else {
-        console.log("LOADING YPR");
         loadYPR(anArrayBuffer, name);
     }
 };
@@ -3041,7 +3027,6 @@ IDE_Morph.prototype.projectMenu = function () {
                 }
 
                 names.forEach(function (line) {
-                    console.log(line);
                     if (line.length > 0) {
                         libMenu.addItem(
                             line,
@@ -3057,11 +3042,8 @@ IDE_Morph.prototype.projectMenu = function () {
     menu.addItem(
         localize('Sounds') + '...',
         function () {
-
-            console.log("HELLO ANGELA!!");
             var names = this.getCostumesList('Sounds'),
                 libMenu = new MenuMorph(this, 'Import sound');
-            console.log(names);
 
             function loadSound(name) {
                 var url = 'Sounds/' + name,
@@ -3069,7 +3051,6 @@ IDE_Morph.prototype.projectMenu = function () {
                 audio.src = url;
                 audio.load();
                 myself.droppedAudio(audio, name);
-                console.log("LOADING SOUNDS");
             }
 
             names.forEach(function (line) {
@@ -3088,19 +3069,8 @@ IDE_Morph.prototype.projectMenu = function () {
     menu.addItem(
         localize('Files') + '...',
         function () {
-
-            console.log("HELLO ANGELA FROM FILES!!");
             var names = this.getCostumesList('Files'),
                 libMenu = new MenuMorph(this, 'Import files');
-
-            // function loadSound(name) {
-            //     var url = 'Sounds/' + name,
-            //         audio = new Audio();
-            //     audio.src = url;
-            //     audio.load();
-            //     myself.droppedAudio(audio, name);
-            // }
-
             names.forEach(function (line) {
                 if (line.length > 0) {
                     libMenu.addItem(
@@ -3111,7 +3081,7 @@ IDE_Morph.prototype.projectMenu = function () {
             });
             libMenu.popup(world, pos);
         },
-        'Select a sound from the media library'
+        'Select a file'
     );
 
     menu.popup(world, pos);
@@ -5926,7 +5896,6 @@ function SpriteIconMorph(aSprite, aTemplate) {
 }
 
 SpriteIconMorph.prototype.init = function (aSprite, aTemplate) {
-    console.log("ANGELA 7");
     var colors, action, query, myself = this;
 
     if (!aTemplate) {
@@ -6252,7 +6221,6 @@ SpriteIconMorph.prototype.reactToDropOf = function (morph, hand) {
      else if (morph instanceof FileIconMorph){
         this.copyFile(morph.object);
      }
-    // TODO ANGELA
     this.world().add(morph);
     morph.slideBackTo(hand.grabOrigin);
 };
@@ -6286,16 +6254,11 @@ SpriteIconMorph.prototype.copyCostume = function (costume) {
 };
 
 SpriteIconMorph.prototype.copySound = function (sound) {
-    console.log("HELLO ANGELA 5");
     var dup = sound.copy();
     this.object.addSound(dup.audio, dup.name);
 };
 
-// COPY FILE
-
 SpriteIconMorph.prototype.copyFile = function (file) {
-    console.log("HELLO ANGELA 15");
-    // var dup = file.copy();
     this.object.addFile(file);
 };
 
@@ -6912,7 +6875,7 @@ SoundIconMorph.uber = ToggleButtonMorph.prototype;
 SoundIconMorph.prototype.thumbSize = new Point(80, 60);
 SoundIconMorph.prototype.labelShadowOffset = null;
 SoundIconMorph.prototype.labelShadowColor = null;
-SoundIconMorph.prototype.labelColor = new Color(80, 80, 80);
+SoundIconMorph.prototype.labelColor = new Color(255, 255, 255);
 SoundIconMorph.prototype.fontSize = 9;
 
 // SoundIconMorph instance creation:
@@ -6922,7 +6885,6 @@ function SoundIconMorph(aSound, aTemplate) {
 }
 
 SoundIconMorph.prototype.init = function (aSound, aTemplate) {
-    console.log("ANGELA 10 SOUND ICON INIT");
     var colors, action, query;
 
     if (!aTemplate) {
@@ -6948,7 +6910,6 @@ SoundIconMorph.prototype.init = function (aSound, aTemplate) {
     this.thumbnail = null;
 
 
-    console.log(aSound);
     // initialize inherited properties:
     SoundIconMorph.uber.init.call(
         this,
@@ -6972,7 +6933,6 @@ SoundIconMorph.prototype.init = function (aSound, aTemplate) {
 };
 
 SoundIconMorph.prototype.createThumbnail = function () {
-    console.log("ANGELA 6");
     var label;
     if (this.thumbnail) {
         this.thumbnail.destroy();
@@ -6989,7 +6949,7 @@ SoundIconMorph.prototype.createThumbnail = function () {
         false,
         this.labelShadowOffset,
         this.labelShadowColor,
-        new Color(200, 350, 125)
+        new Color(200, 200, 200)
     );
     this.thumbnail.add(label);
     label.setCenter(new Point(40, 15));
@@ -7007,7 +6967,6 @@ SoundIconMorph.prototype.createThumbnail = function () {
 };
 
 SoundIconMorph.prototype.createInfo = function () {
-    console.log("HELLO ANGELA 3");
     var dur = Math.round(this.object.audio.duration || 0),
         mod = dur % 60;
     return Math.floor(dur / 60).toString()
@@ -7061,7 +7020,6 @@ SoundIconMorph.prototype.fixLayout
 
 SoundIconMorph.prototype.userMenu = function () {
     var menu = new MenuMorph(this);
-    console.log("HELLO ANGELA 2");
     if (!(this.object instanceof Sound)) { return null; }
     menu.addItem('rename', 'renameSound');
     menu.addItem('delete', 'removeSound');
@@ -7094,7 +7052,6 @@ SoundIconMorph.prototype.renameSound = function () {
 SoundIconMorph.prototype.removeSound = function () {
     var jukebox = this.parentThatIsA(JukeboxMorph),
         idx = this.parent.children.indexOf(this);
-        console.log("REMOVING SOUND ICON MORPH");
     jukebox.removeSound(idx);
 };
 
@@ -7107,7 +7064,6 @@ SoundIconMorph.prototype.createLabel
 // SoundIconMorph drag & drop
 
 SoundIconMorph.prototype.prepareToBeGrabbed = function () {
-    console.log("ANGELA DRAG AND DROP");
     this.removeSound();
 };
 
@@ -7124,7 +7080,6 @@ JukeboxMorph.prototype.constructor = JukeboxMorph;
 JukeboxMorph.uber = ScrollFrameMorph.prototype;
 
 function JukeboxMorph(aSprite, sliderColor) {
-    console.log("HELLO ANGELA 11");
     this.init(aSprite, sliderColor);
 }
 
@@ -7146,7 +7101,6 @@ JukeboxMorph.prototype.init = function (aSprite, sliderColor) {
 // Jukebox updating
 
 JukeboxMorph.prototype.updateList = function () {
-    console.log("ANGELA HERE UPDATE LIST");
     var myself = this,
         x = this.left() + 5,
         y = this.top() + 5,
@@ -7211,7 +7165,6 @@ JukeboxMorph.prototype.step = function () {
 
 JukeboxMorph.prototype.removeSound = function (idx) {
     this.sprite.sounds.remove(idx);
-    console.log("REMOBVING FROM JUKEBOX");
     this.updateList();
 };
 
@@ -7222,7 +7175,6 @@ JukeboxMorph.prototype.wantsDropOf = function (morph) {
 };
 
 JukeboxMorph.prototype.reactToDropOf = function (icon) {
-    console.log("REACT DROP JUKEBOX");
     var idx = 0,
         costume = icon.object,
         top = icon.top();
@@ -7237,7 +7189,6 @@ JukeboxMorph.prototype.reactToDropOf = function (icon) {
     this.updateList();
 };
 
-// ANGELA NEW CODE
 // FileIconMorph ////////////
 
 /*
@@ -7262,7 +7213,6 @@ function FileIconMorph(aFile, aTemplate) {
 }
 
 FileIconMorph.prototype.init = function (aFile, aTemplate) {
-    console.log("ANGELA 13 FILE ICON INITIALIZATION");
     var colors, action, query;
 
     if (!aTemplate) {
@@ -7310,7 +7260,6 @@ FileIconMorph.prototype.init = function (aFile, aTemplate) {
 };
 
 FileIconMorph.prototype.createThumbnail = function () {
-    console.log("ANGELA 14");
     var label;
     if (this.thumbnail) {
         this.thumbnail.destroy();
@@ -7331,33 +7280,11 @@ FileIconMorph.prototype.createThumbnail = function () {
     );
     this.thumbnail.add(label);
     label.setCenter(new Point(40, 15));
-
-    // NO NEED FOR BUTTON I THINK
-    // this.button = new PushButtonMorph(
-    //     this,
-    //     'toggleAudioPlaying',
-    //     (this.object.previewAudio ? 'Stop' : 'Play')
-    // );
-    // this.button.drawNew();
-    // this.button.hint = 'Play sound';
-    // this.button.fixLayout();
-    // this.thumbnail.add(this.button);
-    // this.button.setCenter(new Point(40, 40));
 };
 
 FileIconMorph.prototype.createInfo = function () {
     return this.object.name;
 };
-
-/*
-SoundIconMorph.prototype.userMenu = function () {
-    var menu = new MenuMorph(this);
-    console.log("HELLO ANGELA 2");
-    if (!(this.object instanceof Sound)) { return null; }
-    menu.addItem('rename', 'renameSound');
-    menu.addItem('delete', 'removeSound');
-    return menu;
-};*/
 
 FileIconMorph.prototype.createLabel
     = SpriteIconMorph.prototype.createLabel;
@@ -7368,7 +7295,6 @@ FileIconMorph.prototype.fixLayout
 FileIconMorph.prototype.removeFile = function () {
     var fileFolder = this.parentThatIsA(FileFolderMorph),
         idx = this.parent.children.indexOf(this);
-        console.log("REMOVING FILE ICON MORPH");
         fileFolder.removeFile(idx);
 };
 
@@ -7379,7 +7305,6 @@ FileIconMorph.prototype.createLabel
     = SpriteIconMorph.prototype.createLabel;
 
 FileIconMorph.prototype.prepareToBeGrabbed = function () {
-        console.log("FILE ICON DRAG AND DROP");
         this.removeFile();
 };
 
@@ -7393,7 +7318,6 @@ FileFolderMorph.prototype.constructor = FileFolderMorph;
 FileFolderMorph.uber = ScrollFrameMorph.prototype;
 
 function FileFolderMorph(aSprite, sliderColor){
-    console.log("FILE FOLDER MORPH ANGELA 12");
     this.init(aSprite, sliderColor);
 }
 
@@ -7467,7 +7391,6 @@ FileFolderMorph.prototype.updateSelection = function () {
 FileFolderMorph.prototype.removeFile = function (idx) {
     console.log(idx);
     this.sprite.files.remove(idx);
-    console.log("REMOVING FROM FILEFOLDER MORPH");
     this.updateList();
 };
 

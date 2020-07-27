@@ -941,7 +941,6 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
             part.setContents(['width']);
             break;
         case '%snd':
-            console.log("CASE IS SOUNDS");
             part = new InputSlotMorph(
                 null,
                 false,
@@ -6639,13 +6638,11 @@ InputSlotMorph.prototype.soundsMenu = function () {
 };
 
 InputSlotMorph.prototype.filesMenu = function () {
-    console.log("FILES MENU!");
     var rcvr = this.parentThatIsA(BlockMorph).receiver(),
         allNames = [],
         dict = {};
-console.log(rcvr.files);
-    rcvr.files.asArray().forEach(function (sound) {
-        allNames = allNames.concat(sound.name);
+        rcvr.files.asArray().forEach(function (sound) {
+            allNames = allNames.concat(sound.name);
     });
     if (allNames.length > 0) {
         allNames.forEach(function (name) {
