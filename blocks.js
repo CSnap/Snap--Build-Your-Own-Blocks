@@ -941,10 +941,19 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
             part.setContents(['width']);
             break;
         case '%snd':
+            console.log("CASE IS SOUNDS");
             part = new InputSlotMorph(
                 null,
                 false,
                 'soundsMenu',
+                true
+            );
+            break;
+        case '%rwfile':
+            part = new InputSlotMorph(
+                null,
+                false,
+                'filesMenu',
                 true
             );
             break;
@@ -6628,6 +6637,24 @@ InputSlotMorph.prototype.soundsMenu = function () {
     }
     return dict;
 };
+
+InputSlotMorph.prototype.filesMenu = function () {
+    console.log("FILES MENU!");
+    var rcvr = this.parentThatIsA(BlockMorph).receiver(),
+        allNames = [],
+        dict = {};
+console.log(rcvr.files);
+    rcvr.files.asArray().forEach(function (sound) {
+        allNames = allNames.concat(sound.name);
+    });
+    if (allNames.length > 0) {
+        allNames.forEach(function (name) {
+            dict[name] = name;
+        });
+    }
+    return dict;
+};
+
 
 InputSlotMorph.prototype.getVarNamesDict = function () {
     var block = this.parentThatIsA(BlockMorph),

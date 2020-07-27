@@ -9844,6 +9844,7 @@ HandMorph.prototype.processDrop = function (event) {
     }
 
     function readAudio(aFile) {
+        console.log("READING AUDIO");
         var snd = new Audio(),
             frd = new FileReader();
         while (!target.droppedAudio) {
@@ -9851,6 +9852,7 @@ HandMorph.prototype.processDrop = function (event) {
         }
         frd.onloadend = function (e) {
             snd.src = e.target.result;
+            console.log("TO DROPPEDAUDIO()");
             target.droppedAudio(snd, aFile.name);
         };
         frd.readAsDataURL(aFile);
@@ -9869,11 +9871,16 @@ HandMorph.prototype.processDrop = function (event) {
 
     function readBinary(aFile) {
         var frd = new FileReader();
+        console.log("READ BINARY FILE");
+        console.log(target);
+        console.log(target.droppedBinary);
         while (!target.droppedBinary) {
             target = target.parent;
         }
         frd.onloadend = function (e) {
-            target.droppedBinary(e.target.result, aFile.name);
+            console.log(e);
+            console.log(aFile);
+            target.droppedBinary(e.target.result, aFile.name, aFile);
         };
         frd.readAsArrayBuffer(aFile);
     }
@@ -9900,14 +9907,19 @@ HandMorph.prototype.processDrop = function (event) {
             file = files[i];
             if (file.type.indexOf("svg") !== -1
                     && !MorphicPreferences.rasterizeSVGs) {
+                        console.log("HELLO SVG");
                 readSVG(file);
             } else if (file.type.indexOf("image") === 0) {
+                console.log("IMAGE");
                 readImage(file);
             } else if (file.type.indexOf("audio") === 0) {
+                console.log("DROPPED AN AUDIO");
                 readAudio(file);
             } else if (file.type.indexOf("text") === 0) {
                 readText(file);
             } else { // assume it's meant to be binary
+            console.log("DROPPED A BINARY");
+            console.log(file);
                 readBinary(file);
             }
         }

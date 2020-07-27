@@ -142,6 +142,7 @@ var SpriteHighlightMorph;
 var _3DRotationX = 0, _3DRotationY = 0, _3DRotationZ = 0;
 
 let soundBuffer = {};
+let fileBuffer = {};
 let makeAudioContext = new AudioContext();
 // SpriteMorph /////////////////////////////////////////////////////////
 
@@ -1455,6 +1456,7 @@ SpriteMorph.prototype.init = function (globals) {
     this.costume = null;
     this.texture = null;
     this.sounds = new List();
+    this.files = new List();
     this.normalExtent = new Point(60, 60); // only for costume-less situation
     this.scale = 1;
     this.rotationStyle = 1; // 1 = full, 2 = left/right, 0 = off
@@ -1536,7 +1538,11 @@ SpriteMorph.prototype.fullCopy = function () {
         arr.push(sound);
     });
     c.sounds = new List(arr);
-
+    arr = [];
+    this.files.asArray().forEach(function (file) {
+        arr.push(file);
+    });
+    c.files = new List(arr);
     c.parts = [];
     c.anchor = null;
     c.nestingScale = 1;
@@ -2796,6 +2802,7 @@ SpriteMorph.prototype.wearTexture = function (texture) {
 // SpriteMorph sound management
 
 SpriteMorph.prototype.addSound = function (audio, name) {
+    console.log("ADDING SOUND");
     var volume = this.volume;
     this.sounds.add(new Sound(audio, name, volume));
 };
@@ -2828,6 +2835,27 @@ SpriteMorph.prototype.playSound = function (name) {
         }
         return active;
     }
+};
+
+SpriteMorph.prototype.addFile = function(fileToRead){
+    let fileReader = new FileReader();
+    let fileName = fileToRead.name;
+    console.log("TO ADD A FILE INTO OUR FILE BUFFER");
+    console.log(fileToRead);
+    this.files.add(fileToRead);
+    // add to dictionary of <name to file>
+    console.log(fileBuffer);
+    fileReader.onload = function(e){
+        let contents = e.target.result;
+        let data = {
+          string: contents,
+        };
+     fileBuffer[fileName] = data;
+
+    }
+    fileReader.readAsText(fileToRead);
+
+
 };
 
 SpriteMorph.prototype.doSetVolume = function (val) {
@@ -4807,6 +4835,7 @@ StageMorph.prototype.init = function (globals) {
     this.costumes = new List();
     this.costume = null;
     this.sounds = new List();
+    this.files = new List();
     this.version = Date.now(); // for observers
     this.isFastTracked = false;
     this.cloneCount = 0;
@@ -6150,6 +6179,8 @@ StageMorph.prototype.addSound
 StageMorph.prototype.playSound
     = SpriteMorph.prototype.playSound;
 
+StageMorph.prototype.addFile = SpriteMorph.prototype.addFile;
+
 StageMorph.prototype.doSetVolume
     = SpriteMorph.prototype.doSetVolume;
 
@@ -6476,6 +6507,8 @@ SpriteBubbleMorph.prototype.fixLayout = function () {
 // Costume instance creation
 
 function Costume(canvas, name, rotationCenter, url, is3D, is3dSwitchable) {
+    console.log("SVG");
+    console.log(name);
     this.contents = canvas || newCanvas();
     this.shrinkToFit(this.maxExtent);
     this.name = name || null;
