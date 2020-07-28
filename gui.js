@@ -1379,25 +1379,6 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.fixLayout();
     tabBar.add(tab);
 
-    tab = new TabMorph(
-        tabColors,
-        null, // target
-        function () {tabBar.tabTo('files'); },
-        localize('Files'), // label
-        function () {  // query
-            return myself.currentTab === 'files';
-        }
-    );
-    tab.padding = 3;
-    tab.corner = tabCorner;
-    tab.edge = 1;
-    tab.labelShadowOffset = new Point(-1, -1);
-    tab.labelShadowColor = tabColors[1];
-    tab.labelColor = this.buttonLabelColor;
-    tab.drawNew();
-    tab.fixLayout();
-    tabBar.add(tab);
-
     tabBar.fixLayout();
     tabBar.children.forEach(function (each) {
         each.refresh();
