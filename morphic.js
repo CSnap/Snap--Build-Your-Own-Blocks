@@ -9910,7 +9910,6 @@ HandMorph.prototype.processDrop = function (event) {
             } else if (file.type.indexOf("text") === 0) {
                 readText(file);
             } else { // assume it's meant to be binary
-            console.log(file);
                 readBinary(file);
             }
         }

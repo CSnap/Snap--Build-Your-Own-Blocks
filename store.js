@@ -712,7 +712,6 @@ SnapSerializer.prototype.loadFiles = function (object, model) {
     // private
     var files = model.childNamed('files');
     if (files) {
-        console.log(files);
         object.files = this.loadValue(files.require('list'));
     }
 };
