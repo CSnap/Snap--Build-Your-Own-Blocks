@@ -654,6 +654,7 @@ SnapSerializer.prototype.loadObject = function (object, model) {
     this.loadNestingInfo(object, model);
     this.loadCostumes(object, model);
     this.loadSounds(object, model);
+    this.loadFiles(object, model);
     this.loadCustomBlocks(object, blocks);
     this.populateCustomBlocks(object, blocks);
     this.loadVariables(object.variables, model.require('variables'));
@@ -704,6 +705,15 @@ SnapSerializer.prototype.loadSounds = function (object, model) {
     var sounds = model.childNamed('sounds');
     if (sounds) {
         object.sounds = this.loadValue(sounds.require('list'));
+    }
+};
+
+SnapSerializer.prototype.loadFiles = function (object, model) {
+    // private
+    var files = model.childNamed('files');
+    if (files) {
+        console.log(files);
+        object.files = this.loadValue(files.require('list'));
     }
 };
 
@@ -1424,6 +1434,7 @@ StageMorph.prototype.toXML = function (serializer) {
             '<pentrails>$</pentrails>' +
             '<costumes>%</costumes>' +
             '<sounds>%</sounds>' +
+            '<files>%</files>' +
             '<variables>%</variables>' +
             '<blocks>%</blocks>' +
             '<scripts>%</scripts><sprites>%</sprites>' +
@@ -1451,6 +1462,7 @@ StageMorph.prototype.toXML = function (serializer) {
         this.trailsCanvas.toDataURL('image/png'),
         serializer.store(this.costumes, this.name + '_cst'),
         serializer.store(this.sounds, this.name + '_snd'),
+        serializer.store(this.files, this.name +'_rwfile'),
         serializer.store(this.variables),
         serializer.store(this.customBlocks),
         serializer.store(this.scripts),
@@ -1482,6 +1494,7 @@ SpriteMorph.prototype.toXML = function (serializer) {
             '%' + // nesting info
             '<costumes>%</costumes>' +
             '<sounds>%</sounds>' +
+            '<files>%</files>' +
             '<variables>%</variables>' +
             '<blocks>%</blocks>' +
             '<scripts>%</scripts>' +
@@ -1521,6 +1534,7 @@ SpriteMorph.prototype.toXML = function (serializer) {
 
         serializer.store(this.costumes, this.name + '_cst'),
         serializer.store(this.sounds, this.name + '_snd'),
+        serializer.store(this.files, this.name +'_rwfile'),
         serializer.store(this.variables),
         !this.customBlocks ?
                     '' : serializer.store(this.customBlocks),

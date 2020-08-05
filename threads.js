@@ -1562,14 +1562,13 @@ Process.prototype.createWheel = function(input, body){
     wheelMap[input] = wheelEntry;
     this.doSetVar(input, wheelEntry);
     this.popContext();
-    if (true) {
-        if (args[1]) {
-            this.pushContext(args[1].blockSequence(), outer);
-            this.context.isLambda = isLambda;
-            this.context.isImplicitLambda = isImplicitLambda;
-            this.context.isCustomBlock = isCustomBlock;
-            this.context.upvars = new UpvarReference(upvars);
-        }
+    currentWheel = input;
+    if (args[1]) {
+        this.pushContext(args[1].blockSequence(), outer);
+        this.context.isLambda = isLambda;
+        this.context.isImplicitLambda = isImplicitLambda;
+        this.context.isCustomBlock = isCustomBlock;
+        this.context.upvars = new UpvarReference(upvars);
     }
 
     this.pushContext();

@@ -142,7 +142,6 @@ var SpriteHighlightMorph;
 var _3DRotationX = 0, _3DRotationY = 0, _3DRotationZ = 0;
 
 let soundBuffer = {};
-let fileBuffer = {};
 let makeAudioContext = new AudioContext();
 // SpriteMorph /////////////////////////////////////////////////////////
 
@@ -2836,23 +2835,6 @@ SpriteMorph.prototype.playSound = function (name) {
     }
 };
 
-SpriteMorph.prototype.addFile = function(fileToRead){
-    let fileReader = new FileReader();
-    let fileName = fileToRead.name;
-    this.files.add(fileToRead);
-    // add to dictionary of <name to file>
-    fileReader.onload = function(e){
-        let contents = e.target.result;
-        let data = {
-          string: contents,
-        };
-     fileBuffer[fileName] = data;
-
-    }
-    fileReader.readAsText(fileToRead);
-
-
-};
 
 SpriteMorph.prototype.doSetVolume = function (val) {
     var myself = this;
@@ -7083,6 +7065,7 @@ function Sound(audio, name, volume) {
             return;
         }
         soundBuffer[name] = res.buffer;
+        this.buffer = res.buffer;
     });
 
 };
@@ -7108,6 +7091,7 @@ Sound.prototype.copy = function () {
 };
 
 Sound.prototype.toDataURL = function () {
+    // TODO why is this different in the modules code??
     return this.audio.src;
 };
 
