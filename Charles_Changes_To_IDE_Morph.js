@@ -1,10 +1,11 @@
-IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name) {
+IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name, aFile) {
     // dynamically load ypr->Snap!
     var ypr = document.getElementById('ypr'),
         myself = this,
         suffix = name.substring(name.length - 3);
-
     if (suffix.toLowerCase() === 'ypr') {
+        console.log(suffix);
+
         function loadYPR(buffer, lbl) {
             var reader = new sb.Reader(),
                 pname = lbl.split('.')[0]; // up to period
@@ -23,10 +24,14 @@ IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name) {
         } else {
             loadYPR(anArrayBuffer, name);
         }
-    } else if (suffix.toLowerCase() === 'zip' ||
-        suffix.toLowerCase() === 'smod') {
-		var mdl = new ModuleLoader(this);
-		var zip = new JSZip(anArrayBuffer);
-        mdl.open(zip, {base64: false});
-    }
+        } else if (suffix.toLowerCase() === 'zip' ||
+            suffix.toLowerCase() === 'smod') {
+            var mdl = new ModuleLoader(this);
+            var zip = new JSZip(anArrayBuffer);
+            mdl.open(zip, {base64: false});
+        }
+        // here is the case to import rw files
+        else if (suffix.toLowerCase() == '.rw'){
+        myself.droppedRWFile(aFile);
+        }
 };

@@ -948,6 +948,14 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
                 true
             );
             break;
+        case '%rwfile':
+            part = new InputSlotMorph(
+                null,
+                false,
+                'filesMenu',
+                true
+            );
+            break;
         case '%key':
             part = new InputSlotMorph(
                 null,
@@ -6628,6 +6636,22 @@ InputSlotMorph.prototype.soundsMenu = function () {
     }
     return dict;
 };
+
+InputSlotMorph.prototype.filesMenu = function () {
+    var rcvr = this.parentThatIsA(BlockMorph).receiver(),
+        allNames = [],
+        dict = {};
+        rcvr.files.asArray().forEach(function (sound) {
+            allNames = allNames.concat(sound.name);
+    });
+    if (allNames.length > 0) {
+        allNames.forEach(function (name) {
+            dict[name] = name;
+        });
+    }
+    return dict;
+};
+
 
 InputSlotMorph.prototype.getVarNamesDict = function () {
     var block = this.parentThatIsA(BlockMorph),

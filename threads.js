@@ -91,6 +91,8 @@ var Context;
 var VariableFrame;
 var UpvarReference;
 
+var wheelMap = {};
+
 function snapEquals(a, b) {
     if (a instanceof List || (b instanceof List)) {
         if (a instanceof List && (b instanceof List)) {
@@ -1544,6 +1546,29 @@ Process.prototype.doRepeat = function (counter, body) {
     this.pushContext('doYield');
     if (body) {
         this.pushContext(body.blockSequence());
+    }
+
+    this.pushContext();
+};
+
+Process.prototype.createWheel = function(input, body){
+    var args = this.context.inputs,
+    outer = this.context.outerContext, // for tail call elimination
+    isLambda = this.context.isLambda,
+    isImplicitLambda = this.context.isImplicitLambda,
+    isCustomBlock = this.context.isCustomBlock,
+    upvars = this.context.upvars;
+    let wheelEntry = {buffer: [], duration: 0.0};
+    wheelMap[input] = wheelEntry;
+    this.doSetVar(input, wheelEntry);
+    this.popContext();
+    currentWheel = input;
+    if (args[1]) {
+        this.pushContext(args[1].blockSequence(), outer);
+        this.context.isLambda = isLambda;
+        this.context.isImplicitLambda = isImplicitLambda;
+        this.context.isCustomBlock = isCustomBlock;
+        this.context.upvars = new UpvarReference(upvars);
     }
 
     this.pushContext();
@@ -3022,6 +3047,7 @@ VariableFrame.prototype.setVar = function (name, value) {
     declared explicitly (e.g. through a "script variables" block),
     before they can be accessed.
 */
+
     var frame = this.find(name);
     if (frame) {
         frame.vars[name] = value;

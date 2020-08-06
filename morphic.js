@@ -1,6 +1,6 @@
 /*
 
-    morphic.js
+    
 
     a lively Web-GUI
     inspired by Squeak
@@ -54,7 +54,7 @@
         (6) development and user modes
         (7) turtle graphics
         (8) damage list housekeeping
-        (9) minifying morphic.js
+        (9) minifying 
     VIII. acknowledgements
     IX. contributors
 
@@ -157,7 +157,7 @@
 
     V. browser compatibility
     ------------------------
-    I have taken great care and considerable effort to make morphic.js
+    I have taken great care and considerable effort to make 
     runnable and appearing exactly the same on all current browsers
     available to me:
 
@@ -175,8 +175,8 @@
 
     VI. the big picture
     -------------------
-    Morphic.js is completely based on Canvas and JavaScript, it is just
-    Morphic, nothing else. Morphic.js is very basic and covers only the
+     is completely based on Canvas and JavaScript, it is just
+    Morphic, nothing else.  is very basic and covers only the
     bare essentials:
 
         * a stepping mechanism (a time-sharing multiplexer for lively
@@ -191,7 +191,7 @@
           events)
         * a single text entry focus per World
 
-    In its current state morphic.js doesn't support Transforms (you
+    In its current state  doesn't support Transforms (you
     cannot rotate Morphs), but with PenMorph there already is a simple
     LOGO-like turtle that you can use to draw onto any Morph it is
     attached to. I'm planning to add special Morphs that support these
@@ -199,16 +199,16 @@
     Therefore these additions ("sprites" etc.) are likely to be part of
     other libraries ("microworld.js") in separate files.
 
-    the purpose of morphic.js is to provide a malleable framework that
+    the purpose of  is to provide a malleable framework that
     will let me experiment with lively GUIs for my hobby horse, which
     is drag-and-drop, blocks based programming languages. Those things
-    (BYOB4 - http://byob.berkeley.edu) will be written using morphic.js
+    (BYOB4 - http://byob.berkeley.edu) will be written using 
     as a library.
 
 
     VII. programming guide
     ----------------------
-    Morphic.js provides a library for lively GUIs inside single HTML
+     provides a library for lively GUIs inside single HTML
     Canvas elements. Each such canvas element functions as a "world" in
     which other visible shapes ("morphs") can be positioned and
     manipulated, often directly and interactively by the user. Morphs
@@ -216,7 +216,7 @@
 
     All things visible in a morphic World are morphs themselves, i.e.
     all text rendering, blinking cursors, entry fields, menus, buttons,
-    sliders, windows and dialog boxes etc. are created with morphic.js
+    sliders, windows and dialog boxes etc. are created with 
     rather than using HTML DOM elements, and as a consequence can be
     changed and adjusted by the programmer regardless of proprietary
     browser behavior.
@@ -251,7 +251,7 @@
     <html>
         <head>
             <title>Morphic!</title>
-            <script type="text/javascript" src="morphic.js"></script>
+            <script type="text/javascript" src=""></script>
             <script type="text/javascript">
                 var world;
 
@@ -296,7 +296,7 @@
     <html>
         <head>
             <title>Morphic!</title>
-            <script type="text/javascript" src="morphic.js"></script>
+            <script type="text/javascript" src=""></script>
             <script type="text/javascript">
                 var world1, world2;
 
@@ -343,7 +343,7 @@
     <html>
         <head>
             <title>touch me!</title>
-            <script type="text/javascript" src="morphic.js"></script>
+            <script type="text/javascript" src=""></script>
             <script type="text/javascript">
                 var worldCanvas, sensor;
 
@@ -397,8 +397,8 @@
         MouseSensorMorph
 
     For the sake of sharing a single file I've included those examples
-    in morphic.js itself. Usually you'll define your additions in a
-    separate file and keep morphic.js untouched.
+    in  itself. Usually you'll define your additions in a
+    separate file and keep  untouched.
 
 
     (2) manipulating morphs
@@ -511,7 +511,7 @@
     Sometimes it is desireable to make "template" shapes which cannot be
     moved themselves, but from which instead duplicates can be peeled
     off. This is especially useful for building blocks in construction
-    kits, e.g. the MIT-Scratch palette. Morphic.js lets you control this
+    kits, e.g. the MIT-Scratch palette.  lets you control this
     functionality by setting the
 
         isTemplate
@@ -970,7 +970,7 @@
     methods of SyntaxElementMorph in the Snap application.
 
 
-    (9) minifying morphic.js
+    (9) minifying 
     ------------------------
     Coming from Smalltalk and being a Squeaker at heart I am a huge fan
     of browsing the code itself to make sense of it. Therefore I have
@@ -979,12 +979,12 @@
 
     Nowadays with live streaming HD video even on mobile phones 250 KB
     shouldn't be a big strain on bandwith, still minifying and even
-    compressing morphic.js down do about 100 KB may sometimes improve
+    compressing  down do about 100 KB may sometimes improve
     performance in production use.
 
     Being an attorney-at-law myself you programmer folk keep harassing
     me with rabulistic nitpickings about free software licenses. I'm
-    releasing morphic.js under an AGPL license. Therefore please make
+    releasing  under an AGPL license. Therefore please make
     sure to adhere to that license in any minified or compressed version.
 
 
@@ -994,14 +994,14 @@
     John Maloney for the SELF programming language, and later ported to
     Squeak (Smalltalk) by John Maloney and Dan Ingalls, who has also
     ported it to JavaScript (the Lively Kernel), once again setting
-    a "Gold Standard" for self sustaining systems which morphic.js
+    a "Gold Standard" for self sustaining systems which 
     cannot and does not aspire to meet.
 
     This Morphic implementation for JavaScript is not a direct port of
     Squeak's Morphic, but still many individual functions have been
     ported almost literally from Squeak, sometimes even including their
     comments, e.g. the morph duplication mechanism fullCopy(). Squeak
-    has been a treasure trove, and if morphic.js looks, feels and
+    has been a treasure trove, and if  looks, feels and
     smells a lot like Squeak, I'll take it as a compliment.
 
     Evelyn Eastmond has inspired and encouraged me with her wonderful
@@ -1013,7 +1013,7 @@
     and explanations for all things Morphic and for being my all time
     programming hero.
 
-    I have originally written morphic.js in Florian Balmer's Notepad2
+    I have originally written  in Florian Balmer's Notepad2
     editor for Windows and later switched to Apple's Dashcode. I've also
     come to depend on both Douglas Crockford's JSLint, Mozilla's Firebug
     and Google's Chrome to get it right.
@@ -9873,7 +9873,9 @@ HandMorph.prototype.processDrop = function (event) {
             target = target.parent;
         }
         frd.onloadend = function (e) {
-            target.droppedBinary(e.target.result, aFile.name);
+            console.log(e);
+            console.log(aFile);
+            target.droppedBinary(e.target.result, aFile.name, aFile);
         };
         frd.readAsArrayBuffer(aFile);
     }
@@ -10571,7 +10573,7 @@ WorldMorph.prototype.contextMenu = function () {
     } else {
         menu.addItem("development mode...", 'toggleDevMode');
     }
-    menu.addItem("about morphic.js...", 'about');
+    menu.addItem("about ...", 'about');
     return menu;
 };
 
@@ -10762,7 +10764,7 @@ WorldMorph.prototype.about = function () {
     }
 
     this.inform(
-        'morphic.js\n\n' +
+        '\n\n' +
             'a lively Web GUI\ninspired by Squeak\n' +
             morphicVersion +
             '\n\nwritten by Jens M\u00F6nig\njens@moenig.org' +

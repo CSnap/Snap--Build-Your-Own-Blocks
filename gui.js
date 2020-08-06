@@ -80,6 +80,8 @@ var TurtleIconMorph;
 var WardrobeMorph;
 var SoundIconMorph;
 var JukeboxMorph;
+var FileIconMorph;
+var FileFolderMorph;
 
 // Costumes
 var Costumes_2D = {
@@ -167,6 +169,8 @@ IDE_Morph.prototype.setDefaultDesign = function () {
         = IDE_Morph.prototype.buttonLabelColor;
     SoundIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
+    FileIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
     TurtleIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 };
@@ -206,6 +210,8 @@ IDE_Morph.prototype.setFlatDesign = function () {
     CostumeIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
     SoundIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    FileIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
     TurtleIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
@@ -1436,6 +1442,16 @@ IDE_Morph.prototype.createSpriteEditor = function () {
         this.spriteEditor.updateSelection();
         this.spriteEditor.acceptDrops = false;
         this.spriteEditor.contents.acceptsDrops = false;
+    } else if (this.currentTab == 'files'){
+        this.spriteEditor = new FileFolderMorph(
+            this.currentSprite,
+            this.sliderColor
+        );
+        this.spriteEditor.color = this.groupColor;
+        this.add(this.spriteEditor);
+        this.spriteEditor.updateSelection();
+        this.spriteEditor.acceptDrops = false;
+        this.spriteEditor.contents.acceptsDrops = false;
     } else {
         this.spriteEditor = new Morph();
         this.spriteEditor.color = this.groupColor;
@@ -1904,6 +1920,12 @@ IDE_Morph.prototype.droppedAudio = function (anAudio, name) {
     this.hasChangedMedia = true;
 };
 
+IDE_Morph.prototype.droppedRWFile = function(fileToRead){
+    this.currentSprite.addFile(fileToRead);
+    this.spriteBar.tabBar.tabTo('files');
+    this.hasChangedMedia = true;
+};
+
 IDE_Morph.prototype.droppedText = function (aString, name) {
     var lbl = name ? name.split('.')[0] : '';
     if (aString.indexOf('<project') === 0) {
@@ -1931,8 +1953,9 @@ IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name) {
     var ypr = document.getElementById('ypr'),
         myself = this,
         suffix = name.substring(name.length - 3);
-
-    if (suffix.toLowerCase() !== 'ypr') {return; }
+    if (suffix.toLowerCase() !== 'ypr') {
+        console.log ("RETURNING FROM DROPPED BINARY");
+        return; }
 
     function loadYPR(buffer, lbl) {
         var reader = new sb.Reader(),
@@ -3022,6 +3045,24 @@ IDE_Morph.prototype.projectMenu = function () {
             libMenu.popup(world, pos);
         },
         'Select a sound from the media library'
+    );
+
+    menu.addItem(
+        localize('Files') + '...',
+        function () {
+            var names = this.getCostumesList('Files'),
+                libMenu = new MenuMorph(this, 'Import files');
+            names.forEach(function (line) {
+                if (line.length > 0) {
+                    libMenu.addItem(
+                        line,
+                        function () {loadSound(line); }
+                    );
+                }
+            });
+            libMenu.popup(world, pos);
+        },
+        'Select a file'
     );
 
     menu.popup(world, pos);
@@ -6146,7 +6187,8 @@ SpriteIconMorph.prototype.wantsDropOf = function (morph) {
     // by drag & drop
     return morph instanceof BlockMorph
         || (morph instanceof CostumeIconMorph)
-        || (morph instanceof SoundIconMorph);
+        || (morph instanceof SoundIconMorph)
+        || (morph instanceof FileIconMorph);
 };
 
 SpriteIconMorph.prototype.reactToDropOf = function (morph, hand) {
@@ -6157,6 +6199,9 @@ SpriteIconMorph.prototype.reactToDropOf = function (morph, hand) {
     } else if (morph instanceof SoundIconMorph) {
         this.copySound(morph.object);
     }
+     else if (morph instanceof FileIconMorph){
+        this.copyFile(morph.object);
+     }
     this.world().add(morph);
     morph.slideBackTo(hand.grabOrigin);
 };
@@ -6192,6 +6237,10 @@ SpriteIconMorph.prototype.copyCostume = function (costume) {
 SpriteIconMorph.prototype.copySound = function (sound) {
     var dup = sound.copy();
     this.object.addSound(dup.audio, dup.name);
+};
+
+SpriteIconMorph.prototype.copyFile = function (file) {
+    this.object.addFile(file);
 };
 
 // CostumeIconMorph ////////////////////////////////////////////////////
@@ -6841,6 +6890,7 @@ SoundIconMorph.prototype.init = function (aSound, aTemplate) {
     this.version = this.object.version;
     this.thumbnail = null;
 
+
     // initialize inherited properties:
     SoundIconMorph.uber.init.call(
         this,
@@ -6853,7 +6903,7 @@ SoundIconMorph.prototype.init = function (aSound, aTemplate) {
         null, // hint
         aTemplate // optional, for cached background images
     );
-
+    
     // override defaults and build additional components
     this.isDraggable = true;
     this.createThumbnail();
@@ -7119,6 +7169,234 @@ JukeboxMorph.prototype.reactToDropOf = function (icon) {
     this.sprite.sounds.add(costume, idx);
     this.updateList();
 };
+
+// FileIconMorph ////////////
+
+/*
+    I am an element in SprideEditor's "Files" tab.
+    // COPYING MUCH FROM SoundIconMorph
+*/
+
+FileIconMorph.prototype = new ToggleButtonMorph();
+FileIconMorph.prototype.constructor = FileIconMorph;
+FileIconMorph.uber = ToggleButtonMorph.prototype;
+
+// FileIconMorph settings
+FileIconMorph.prototype.thumbSize = new Point(80, 60);
+FileIconMorph.prototype.labelShadowOffset = null;
+FileIconMorph.prototype.labelShadowColor = null;
+FileIconMorph.prototype.labelColor = new Color(255, 255, 255);
+FileIconMorph.prototype.fontSize = 9;
+
+// FileIconMorph instance creation:
+function FileIconMorph(aFile, aTemplate) {
+    this.init(aFile, aTemplate);
+}
+
+FileIconMorph.prototype.init = function (aFile, aTemplate) {
+    var colors, action, query;
+
+    if (!aTemplate) {
+        colors = [
+            IDE_Morph.prototype.groupColor,
+            IDE_Morph.prototype.frameColor,
+            IDE_Morph.prototype.frameColor
+        ];
+
+    }
+
+    action = function () {
+        nop(); // When I am selected (which is never the case for sounds)
+    };
+
+    query = function () {
+        return false;
+    };
+
+    // additional properties:
+    this.object = aFile; // mandatory, actually
+    this.version = this.object.version;
+    this.thumbnail = null;
+
+    // initialize inherited properties:
+    FileIconMorph.uber.init.call(
+        this,
+        colors, // color overrides, <array>: [normal, highlight, pressed]
+        null, // target - not needed here
+        action, // a toggle function
+        this.object.name, // label string
+        query, // predicate/selector
+        null, // environment
+        null, // hint
+        aTemplate // optional, for cached background images
+    );
+
+    // override defaults and build additional components
+    this.isDraggable = true;
+    this.createThumbnail();
+    this.padding = 2;
+    this.corner = 8;
+    this.fixLayout();
+    this.fps = 1;
+};
+
+FileIconMorph.prototype.createThumbnail = function () {
+    var label;
+    if (this.thumbnail) {
+        this.thumbnail.destroy();
+    }
+    this.thumbnail = new Morph();
+    this.thumbnail.setExtent(this.thumbSize);
+    this.add(this.thumbnail);
+    label = new StringMorph(
+        this.createInfo(),
+        '16',
+        '',
+        true,
+        false,
+        false,
+        this.labelShadowOffset,
+        this.labelShadowColor,
+        new Color(200, 350, 125)
+    );
+    this.thumbnail.add(label);
+    label.setCenter(new Point(40, 15));
+};
+
+FileIconMorph.prototype.createInfo = function () {
+    return this.object.name;
+};
+
+FileIconMorph.prototype.createLabel
+    = SpriteIconMorph.prototype.createLabel;
+
+FileIconMorph.prototype.fixLayout
+= SpriteIconMorph.prototype.fixLayout;
+
+FileIconMorph.prototype.removeFile = function () {
+    var fileFolder = this.parentThatIsA(FileFolderMorph),
+        idx = this.parent.children.indexOf(this);
+        fileFolder.removeFile(idx);
+};
+
+FileIconMorph.prototype.createBackgrounds
+    = SpriteIconMorph.prototype.createBackgrounds;
+
+FileIconMorph.prototype.createLabel
+    = SpriteIconMorph.prototype.createLabel;
+
+FileIconMorph.prototype.prepareToBeGrabbed = function () {
+        this.removeFile();
+};
+
+
+// FileFolderMorph //////////
+
+/* I am FileFolderMorph, like JukeboxMorph but for .rw files */
+
+FileFolderMorph.prototype = new ScrollFrameMorph();
+FileFolderMorph.prototype.constructor = FileFolderMorph;
+FileFolderMorph.uber = ScrollFrameMorph.prototype;
+
+function FileFolderMorph(aSprite, sliderColor){
+    this.init(aSprite, sliderColor);
+}
+
+FileFolderMorph.prototype.init = function(aSprite, sliderColor){
+      // additional properties
+      this.sprite = aSprite || new SpriteMorph();
+      this.costumesVersion = null;
+      this.spriteVersion = null;
+
+       // initialize inherited properties
+       FileFolderMorph.uber.init.call(this, null, null, sliderColor);
+
+    // configure inherited properties
+    this.acceptsDrops = false;
+    this.fps = 2;
+    this.updateList();
+}
+
+    // FileFolder updating
+FileFolderMorph.prototype.updateList = function () {
+    var myself = this,
+        x = this.left() + 5,
+        y = this.top() + 5,
+        padding = 4,
+        oldFlag = Morph.prototype.trackChanges,
+        icon,
+        template,
+        txt;
+
+    this.changed();
+    oldFlag = Morph.prototype.trackChanges;
+    Morph.prototype.trackChanges = false;
+
+    this.contents.destroy();
+    this.contents = new FrameMorph(this);
+    this.contents.acceptsDrops = false;
+    this.contents.reactToDropOf = function (icon) {
+        myself.reactToDropOf(icon);
+    };
+    this.addBack(this.contents);
+
+    txt = new TextMorph(localize(
+        'import an .rw file from your computer by dragging here'
+    ));
+    txt.fontSize = 9;
+    txt.setColor(SpriteMorph.prototype.paletteTextColor);
+    txt.setPosition(new Point(x, y));
+    this.addContents(txt);
+    y = txt.bottom() + padding;
+
+    this.sprite.files.asArray().forEach(function (sound) {
+        template = icon = new FileIconMorph(sound, template);
+        icon.setPosition(new Point(x, y));
+        myself.addContents(icon);
+        y = icon.bottom() + padding;
+    });
+
+    Morph.prototype.trackChanges = oldFlag;
+    this.changed();
+
+    this.updateSelection();
+}
+
+FileFolderMorph.prototype.updateSelection = function () {
+    this.contents.children.forEach(function (morph) {
+        if (morph.refresh) {morph.refresh(); }
+    });
+    this.spriteVersion = this.sprite.version;
+};
+
+FileFolderMorph.prototype.removeFile = function (idx) {
+    console.log(idx);
+    this.sprite.files.remove(idx);
+    this.updateList();
+};
+
+
+// FileFolder drag & drop
+
+FileFolderMorph.prototype.wantsDropOf = function (morph) {
+    return morph instanceof FileIconMorph;
+};
+
+FileFolderMorph.prototype.reactToDropOf = function (icon) {
+    var idx = 0,
+        costume = icon.object,
+        top = icon.top();
+
+    icon.destroy();
+    this.contents.children.forEach(function (item) {
+        if (item.top() < top - 4) {
+            idx += 1;
+        }
+    });
+    this.sprite.files.add(costume, idx);
+    this.updateList();
+};
+
 ProjectDialogMorph.prototype.fixClassRoomItemColors = function () {
     // remember to always fixLayout() afterwards for the changes
     // to take effect

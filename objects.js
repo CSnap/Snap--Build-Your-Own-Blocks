@@ -141,6 +141,8 @@ var Note;
 var SpriteHighlightMorph;
 var _3DRotationX = 0, _3DRotationY = 0, _3DRotationZ = 0;
 
+let soundBuffer = {};
+let makeAudioContext = new AudioContext();
 // SpriteMorph /////////////////////////////////////////////////////////
 
 // I am a scriptable object
@@ -499,6 +501,12 @@ SpriteMorph.prototype.initBlocks = function () {
         },
 
         // Sound
+        createWheel: {
+            type: 'command',
+            category: 'sound',
+            spec: 'create wheel %var %c',
+            default: [3]
+        },
         playSound: {
             type: 'command',
             category: 'sound',
@@ -1447,6 +1455,7 @@ SpriteMorph.prototype.init = function (globals) {
     this.costume = null;
     this.texture = null;
     this.sounds = new List();
+    this.files = new List();
     this.normalExtent = new Point(60, 60); // only for costume-less situation
     this.scale = 1;
     this.rotationStyle = 1; // 1 = full, 2 = left/right, 0 = off
@@ -1458,6 +1467,7 @@ SpriteMorph.prototype.init = function (globals) {
 	this.costumeColor = [];
     this.volume = 100;
     this.activeSounds = [];
+    this.activeWheels = {};
     this.borderColor = new Color(255,0,0);
     this.borderSize = 0;
     this.lineList = [];
@@ -1527,7 +1537,11 @@ SpriteMorph.prototype.fullCopy = function () {
         arr.push(sound);
     });
     c.sounds = new List(arr);
-
+    arr = [];
+    this.files.asArray().forEach(function (file) {
+        arr.push(file);
+    });
+    c.files = new List(arr);
     c.parts = [];
     c.anchor = null;
     c.nestingScale = 1;
@@ -1932,7 +1946,7 @@ SpriteMorph.prototype.blockTemplates = function (category) {
     /////////////////////////////////
 
     } else if (cat === 'sound') {
-
+        blocks.push(block('createWheel'));
         blocks.push(block('playSound'));
         blocks.push(block('doPlaySoundUntilDone'));
         blocks.push(block('doStopAllSounds'));
@@ -2820,6 +2834,7 @@ SpriteMorph.prototype.playSound = function (name) {
         return active;
     }
 };
+
 
 SpriteMorph.prototype.doSetVolume = function (val) {
     var myself = this;
@@ -4107,6 +4122,7 @@ SpriteMorph.prototype.getTimer = function () {
 
 SpriteMorph.prototype.getTempo = function () {
     var stage = this.parentThatIsA(StageMorph);
+    // this.processes
     if (stage) {
         return stage.getTempo();
     }
@@ -4797,6 +4813,7 @@ StageMorph.prototype.init = function (globals) {
     this.costumes = new List();
     this.costume = null;
     this.sounds = new List();
+    this.files = new List();
     this.version = Date.now(); // for observers
     this.isFastTracked = false;
     this.cloneCount = 0;
@@ -5566,7 +5583,7 @@ StageMorph.prototype.blockTemplates = function (category) {
     /////////////////////////////////
 
     } else if (cat === 'sound') {
-
+        blocks.push(block('createWheel'));
         blocks.push(block('playSound'));
         blocks.push(block('doPlaySoundUntilDone'));
         blocks.push(block('doStopAllSounds'));
@@ -6139,6 +6156,8 @@ StageMorph.prototype.addSound
 
 StageMorph.prototype.playSound
     = SpriteMorph.prototype.playSound;
+
+StageMorph.prototype.addFile = SpriteMorph.prototype.addFile;
 
 StageMorph.prototype.doSetVolume
     = SpriteMorph.prototype.doSetVolume;
@@ -7020,7 +7039,36 @@ function Sound(audio, name, volume) {
     this.audio = audio; // mandatory
     this.name = name || "Sound";
     this.volume = volume || 100;
-}
+    // fetch audio buffer
+    let loadBuffer = function(url, res){
+        let request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.responseType = 'arraybuffer';
+        request.onload = function(){
+            let success = function(buffer) {
+                res({
+                  buffer: buffer,
+                });
+              };
+      
+              let error = function(err) {
+                res(null, err);
+              };
+              makeAudioContext.decodeAudioData(request.response, success, error);
+        };
+        request.send();
+    };
+
+    loadBuffer(audio.src, function(res, err){
+        if (err){
+            console.error("ERROR LOADING SOUND " + this.audio.name);
+            return;
+        }
+        soundBuffer[name] = res.buffer;
+        this.buffer = res.buffer;
+    });
+
+};
 
 Sound.prototype.play = function () {
     // return an instance of an audio element which can be terminated
@@ -7043,6 +7091,7 @@ Sound.prototype.copy = function () {
 };
 
 Sound.prototype.toDataURL = function () {
+    // TODO why is this different in the modules code??
     return this.audio.src;
 };
 
