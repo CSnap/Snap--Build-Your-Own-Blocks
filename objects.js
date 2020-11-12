@@ -1033,7 +1033,7 @@ SpriteMorph.prototype.initBlocks = function () {
             type: 'reporter',
             category: 'sensing',
             spec: 'http:// %s',
-            defaults: ['csdt.rpi.edu']
+            defaults: ['csdt.org']
         },
         reportIsFastTracking: {
             type: 'predicate',
