@@ -207,11 +207,16 @@ ModuleLoader.prototype.open = function(zip, options) {
   return zip;
 }
 
+
+// Changed for offline CSDT
 ModuleLoader.prototype.getApplicationURL = function(module, api_url) {
   //var module_name = this.slugify(module);
   // API doesn't support slugged module names yet
   var module_name = module;
-  return api_url + module_name + "/" + module_name + ".zip";
+
+  // return api_url + module_name + "/" + module_name + ".zip";
+  return module_name;
+  
 }
 
 ModuleLoader.prototype.slugify = function(text) {
