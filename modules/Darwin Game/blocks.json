@@ -1,0 +1,49 @@
+{
+    "translate_percent": {
+                "type": "command",
+                "category": "motion",
+                "spec": "translate by %n of %drc",
+                "defaults": [100, null]
+    },
+	"changeCostumeColor": {
+				"type": "command",
+				"category": "looks",
+				"spec": "set costume color to %n",
+				"defaults": [0]
+	},
+	"setCostumeShade": {
+				"type": "command",
+				"category": "looks",
+				"spec": "set costume shade to %n",
+				"defaults": [100]
+	},
+	"changeCostumeShade": {
+				"type": "command",
+				"category": "looks",
+				"spec": "change costume shade by %n",
+				"defaults": [100]
+	},
+         "flipXAxis": {
+                "type": "command",
+                "category": "looks",
+                "spec": "reflect across X axis",
+                "defaults": []
+        },
+        "flipYAxis": {
+                "type": "command",
+                "category": "looks",
+                "spec": "reflect across Y axis",
+                "defaults": []
+    },
+   "setCoordinateScale": {
+            "type": "command",
+            "category": "looks",
+            "spec": "set coordinate scale %n",
+            "defaults": [18]
+   },
+   "getCoordinateScale": {
+            "type": "reporter",
+            "category": "looks",
+            "spec": "coordinate scale"
+   }       
+}

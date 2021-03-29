@@ -1,0 +1,72 @@
+{
+    "translate_by": {
+                "type": "command",
+                "category": "motion",
+                "spec": "translate by %n of %drc",
+                "defaults": [100, "width"]
+    },
+	"changeCostumeColor": {
+				"type": "command",
+				"category": "looks",
+				"spec": "set costume color to %n",
+				"defaults": [0]
+	},
+	"changeCostumeShade": {
+				"type": "command",
+				"category": "looks",
+				"spec": "set costume shade to %n",
+				"defaults": [100]
+	},
+	"3DRotationX": {
+				"type": "reporter",
+				"category": "motion",
+				"spec": "3D x rotation"
+	},
+	"3DRotationY": {
+				"type": "reporter",
+				"category": "motion",
+				"spec": "3D y rotation"
+	},
+	"3DRotationZ": {
+				"type": "reporter",
+				"category": "motion",
+				"spec": "3D z rotation"
+	},
+	"_3DXCameraRotation": {
+				"type": "reporter",
+				"category": "looks",
+				"spec": "3D camera x rotation"
+	},
+	"_3DYCameraRotation": {
+				"type": "reporter",
+				"category": "looks",
+				"spec": "3D camera y rotation"
+	},
+	"torus": {
+				"type": "command",
+				"category": "pen",
+				"spec": "torus width: %n length: %n",
+				"defaults": [100, 100]
+	},
+	"parabolaSegmentLength": {
+				"type": "reporter",
+				"category": "pen",
+				"spec": "length of arc width: %n length: %n",
+				"defaults": [100, 100]
+	},
+	"showPlane": {
+				"type": "command",
+				"category": "looks",
+				"spec": "show coordinate plane"
+	},
+	"hidePlane": {
+				"type": "command",
+				"category": "looks",
+				"spec": "hide coordinate plane"
+	},
+	"printVariable": {
+				"type": "command",
+				"category": "variables",
+				"spec": "print list %l"
+	}
+}

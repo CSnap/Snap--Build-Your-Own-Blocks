@@ -1,0 +1,20 @@
+{
+    "translate_by": {
+                "type": "command",
+                "category": "motion",
+                "spec": "translate by %n of %s",
+                "defaults": [100, "width"]
+    },
+	"changeCostumeColor": {
+				"type": "command",
+				"category": "looks",
+				"spec": "set costume color to %n",
+				"defaults": [0]
+	},
+	"changeCostumeShade": {
+				"type": "command",
+				"category": "looks",
+				"spec": "set costume shade to %n",
+				"defaults": [100]
+	}
+}
