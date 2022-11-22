@@ -7408,3 +7408,23 @@ ProjectDialogMorph.prototype.fixClassRoomItemColors = function () {
         item.noticesTransparentClick = true;
     });
 };
+////////////////////////////////////////////////////////////////
+// Pro tutorial functions
+IDE_Morph.prototype.fetchBlockList = function () {
+	return Object.keys(this.stage.children[0].blocks);
+};
+
+IDE_Morph.prototype.loadTutorial = function (xml, changeBlocks, coreList, whitelist, moduleName, callback = null) {
+	let myself = this;
+	StageMorph.prototype.tutorial = true;
+	this.disableBackup = changeBlocks;
+	this.initialScaleSize = 0.7;
+	const load_tutorial = () => {
+		myself.openProjectString(xml, () => {
+			// myself.displayTutorialBlocks(coreList, whitelist);
+			if (callback) callback();
+		});
+	};
+	const mdl = new ModuleLoader(myself);
+	mdl.loadModule(moduleName, "../applications/CSnap-Modules/", load_tutorial);
+};

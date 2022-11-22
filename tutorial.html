@@ -1,0 +1,123 @@
+<html>
+	<link type="text/css" id="dark-mode" rel="stylesheet" href="" /><head>
+		<title>Pre-Columbian Pyramids</title>
+	</head>
+	<body>
+		<canvas
+			id="world"
+			tabindex="1"
+			style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%"
+			width="1565"
+			height="1240">
+			<script type="text/javascript">
+				var config = {
+					modules: [],
+					asset_path: "",
+					urls: {
+						demos_url: "demo.xml",
+						goals_url: "goals.xml",
+					},
+				};
+			</script>
+
+			<script type="text/javascript" src="jquery-1.11.0.js"></script>
+
+			<script type="text/javascript" src="lib/jszip.js"></script>
+			<script type="text/javascript" src="lib/jszip-load.js"></script>
+			<script type="text/javascript" src="lib/jszip-deflate.js"></script>
+			<script type="text/javascript" src="lib/jszip-inflate.js"></script>
+			<script type="text/javascript" src="lib/jszip-utils.js"></script>
+			<script type="text/javascript" src="module-loader.js"></script>
+
+			<script type="text/javascript" src="rw-parser.js"></script>
+
+			<script type="text/javascript" src="morphic.js"></script>
+			<script type="text/javascript" src="widgets.js"></script>
+			<script type="text/javascript" src="blocks.js"></script>
+			<script type="text/javascript" src="threads.js"></script>
+			<script type="text/javascript" src="objects.js"></script>
+			<script type="text/javascript" src="gui.js"></script>
+			<script type="text/javascript" src="paint.js"></script>
+			<script type="text/javascript" src="lists.js"></script>
+			<script type="text/javascript" src="byob.js"></script>
+			<script type="text/javascript" src="xml.js"></script>
+			<script type="text/javascript" src="store.js"></script>
+			<script type="text/javascript" src="locale.js"></script>
+			<script type="text/javascript" src="cloud.js"></script>
+			<script type="text/javascript" src="sha512.js"></script>
+			<script type="text/javascript" src="threejs/three.js"></script>
+			<script type="text/javascript" src="threejs/helvetiker_regular.typeface.js"></script>
+			<script type="text/javascript" src="Charles_Changes_To_IDE_Morph.js"></script>
+			<script type="text/javascript" src="FileSaver.min.js"></script>
+
+			<script type="text/javascript">
+				var world;
+				window.onload = function () {
+					world = new WorldMorph(document.getElementById("world"));
+					new IDE_Morph().openIn(world);
+					setInterval(loop, 1);
+				};
+				function loop() {
+					world.doOneCycle();
+				}
+			</script>
+
+			// CSRF token just in case
+
+			<script>
+				$(function () {
+					// Helper function to get CSRF tokens, if present
+					function getCookie(name) {
+						var cookieValue = null;
+						if (document.cookie && document.cookie != "") {
+							var cookies = document.cookie.split(";");
+							for (var i = 0; i < cookies.length; i++) {
+								var cookie = jQuery.trim(cookies[i]);
+								// Does this cookie string begin with the name we want?
+								if (cookie.substring(0, name.length + 1) == name + "=") {
+									cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+									break;
+								}
+							}
+						}
+						return cookieValue;
+					}
+					var csrftoken = getCookie("csrftoken");
+
+					function csrfSafeMethod(method) {
+						// these HTTP methods do not require CSRF protection
+						return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
+					}
+					function sameOrigin(url) {
+						// test that a given url is a same-origin URL
+						// url could be relative or scheme relative or absolute
+						var host = document.location.host; // host + port
+						var protocol = document.location.protocol;
+						var sr_origin = "//" + host;
+						var origin = protocol + sr_origin;
+						// Allow absolute or scheme relative URLs to same origin
+						return (
+							url == origin ||
+							url.slice(0, origin.length + 1) == origin + "/" ||
+							url == sr_origin ||
+							url.slice(0, sr_origin.length + 1) == sr_origin + "/" ||
+							// or any other URL that isn't scheme relative or absolute i.e relative.
+							!/^(\/\/|http:|https:).*/.test(url)
+						);
+					}
+
+					$.ajaxSetup({
+						beforeSend: function (xhr, settings) {
+							if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+								// Send the token to same-origin, relative URLs only.
+								// Send the token only if the method warrants CSRF protection
+								// Using the CSRFToken value acquired earlier
+								xhr.setRequestHeader("X-CSRFToken", csrftoken);
+							}
+						},
+					});
+				});
+			</script>
+		</canvas>
+	</body>
+</html>
