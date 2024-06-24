@@ -703,6 +703,11 @@ SpriteMorph.prototype.initBlocks = function () {
             category: 'pen',
             spec: 'fix borders'
         },
+		flatLineEnds: {
+            type: 'command',
+            category: 'pen',
+            spec: 'flat line end? %b'
+        },
         // 3D shapes
         renderSphere: {
             type: 'command',
@@ -2013,6 +2018,7 @@ SpriteMorph.prototype.blockTemplates = function (category) {
         blocks.push('-');
         blocks.push(block('doStamp'));
         blocks.push(block('smoothBorders'));
+        blocks.push(block('flatLineEnds'));
 
         if (this.costume && this.costume.is3D) {
             blocks.push(block('clear'));
@@ -4849,6 +4855,8 @@ StageMorph.prototype.init = function (globals) {
     this.shownObjects = new List();
     this.hiddenObjects = new List();
     this.init3D();
+
+    this.stageStretch = false;
 };
 
 // StageMorph scaling
@@ -4903,11 +4911,22 @@ StageMorph.prototype.drawNew = function () {
     if (this.costume) {
         ctx = this.image.getContext('2d');
         ctx.scale(this.scale, this.scale);
-        ctx.drawImage(
-            this.costume.contents,
-            (this.width() / this.scale - this.costume.width()) / 2,
-            (this.height() / this.scale - this.costume.height()) / 2
-        );
+        if(this.stageStretch){
+            console.log('scale Image');
+            ctx.drawImage(
+                this.costume.contents,0,0,
+                StageMorph.prototype.dimensions.x, this.height()
+            );
+        }else{
+            console.log('default');
+            ctx.drawImage(
+                this.costume.contents,
+                (this.width() / this.scale - this.costume.width()) / 2,
+                (this.height() / this.scale - this.costume.height()) / 2
+            );
+        }
+
+
     }
 };
 
@@ -5943,6 +5962,16 @@ StageMorph.prototype.userMenu = function () {
         },
         'open a new window\nwith a picture of the stage'
     );
+    // save stage with transparent image
+    menu.addItem(
+        "pic without stage...",
+        function () {
+            world.children[0].saveFileAs(myself.trailsCanvas.toDataURL(), 'image/png', world.children[0].projetName + ' image');
+        },
+        'downloads your work with no\n' +
+            'stage image, giving it a \ntransparent background',
+    );
+
     if (shiftClicked) {
         menu.addLine();
         menu.addItem(
@@ -6495,7 +6524,7 @@ function Costume(canvas, name, rotationCenter, url, is3D, is3dSwitchable) {
     // newly added for 3D
     this.url = url;
     this.is3D = is3D;
-    this.is3dSwitchable = is3dSwitchable
+    this.is3dSwitchable = is3dSwitchable;
     this.geometry = null;
     this.map = null;
 }
@@ -8092,3 +8121,10 @@ function round10(val,exp)
 	var pow = Math.pow(10,exp);
 	return Math.round(val/pow)*pow;
 }
+
+
+//CSDT Blocks
+SpriteMorph.prototype.flatLineEnds = function(bool){
+    SpriteMorph.prototype.useFlatLineEnds = bool;
+}
+
